@@ -6,11 +6,10 @@
 --      - filetype indents
 -- 4. PLUGIN LIST
 -- 5. LAZY (plugin installation)
--- 6. PLUGIN CONFIGS
+-- 6. PLUGIN CONFIGURATIONS
 -- 7. LSP CONFIGURATION
 -- =============================================================================
 
--- vim.cmd [[colorscheme default]]
 print("Initializing Config")
 
 -- =============================================================================
@@ -171,7 +170,6 @@ vim.api.nvim_create_autocmd("Filetype", {
 
 local plugins = require('plugin-specs')
 
-
 -- =============================================================================
 -- 5. LAZY
 -- =============================================================================
@@ -201,5 +199,9 @@ require('lazy').setup({
         }
 })
 
+
+-- =============================================================================
+-- 6. PLUGIN CONFIGURATIONS
+-- =============================================================================
 
 vim.cmd.colorscheme 'vscode'

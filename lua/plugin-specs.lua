@@ -1,11 +1,12 @@
 -- CONTENTS
 -- 1. COLORSCHEME
 -- 2. GITSIGNS
---
+-- 3. INDENTBLANKLINES IBL
 
 return {
-        -- 1. COLORSCHEME
+        -- 1. COLORSCHEME ; see https://github.com/Mofiqul/vscode.nvim
         {
+                -- REMEMBER TO SET colorscheme IN TOP LEVEL init.lua
                 "Mofiqul/vscode.nvim",
                 priority = 1000,
                 opts = {
@@ -19,7 +20,7 @@ return {
                 },
         },
 
-        -- 2. GITSIGNS
+        -- 2. GITSIGNS ; see https://github.com/lewis6991/gitsigns.nvim
         {
                 'lewis6991/gitsigns.nvim',
                 opts = {
@@ -71,6 +72,37 @@ return {
                                 row = 0,
                                 col = 1
                         },
+                        on_attach = function(bufnr)
+                                local gitsigns = require('gitsigns')
+
+                                local function map(mode, l, r, opts)
+                                        opts = opts or {}
+                                        opts.buffer = bufnr
+                                        vim.keymap.set(mode, l, r, opts)
+                                end
+
+                                -- Navigation
+                                map('n', ']g', function()
+                                        if vim.wo.diff then
+                                                vim.cmd.normal({']c', bang = true})
+                                        else
+                                                gitsigns.nav_hunk('next')
+                                        end
+                                end)
+
+                                map('n', '[g', function()
+                                        if vim.wo.diff then
+                                                vim.cmd.normal({'[c', bang = true})
+                                        else
+                                                gitsigns.nav_hunk('prev')
+                                        end
+                                end)
+                        end,
                 },
+        },
+
+        -- 3. INDENTBLANKLINES IBL
+        {
+
         },
 }
