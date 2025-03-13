@@ -2,6 +2,7 @@
 -- 1. COLORSCHEME
 -- 2. GITSIGNS
 -- 3. INDENTBLANKLINES IBL
+-- 4. TOGGLETERM
 
 return {
         -- 1. COLORSCHEME ; see https://github.com/Mofiqul/vscode.nvim
@@ -101,7 +102,17 @@ return {
                 },
         },
 
-        -- 3. INDENTBLANKLINES IBL
+        -- 3. INDENTBLANKLINES IBL ; see https://github.com/lukas-reineke/indent-blankline.nvim
+        {
+                "lukas-reineke/indent-blankline.nvim",
+                main = "ibl",
+                ---@module "ibl"
+                ---@type ibl.config
+                opts = {
+                        indent = { char = '▏' },
+                },
+        },
+        -- 4. TOGGLETERM
         {
 
         },
