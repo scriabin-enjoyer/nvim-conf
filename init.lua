@@ -10,6 +10,7 @@
 -- 7. LSP CONFIGURATION
 -- =============================================================================
 
+-- vim.cmd [[colorscheme default]]
 print("Initializing Config")
 
 -- =============================================================================
@@ -168,12 +169,8 @@ vim.api.nvim_create_autocmd("Filetype", {
 -- 4. PLUGIN LIST
 -- =============================================================================
 
-local plugins = {
-        {
-                'lewis6991/gitsigns.nvim'
-        }
+local plugins = require('plugin-specs')
 
-}
 
 -- =============================================================================
 -- 5. LAZY
@@ -198,8 +195,11 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Plugin Installations
 require('lazy').setup({
-        spec = {},
+        spec = plugins,
         rocks = {
                 enabled = false,
         }
 })
+
+
+vim.cmd.colorscheme 'vscode'
