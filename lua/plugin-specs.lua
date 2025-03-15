@@ -82,6 +82,9 @@ return {
                                         vim.keymap.set(mode, l, r, opts)
                                 end
 
+                                local opts_next = { desc = 'Goto next hunk' }
+                                local opts_prev = { desc = 'Goto prev hunk' }
+
                                 -- Navigation
                                 map('n', ']g', function()
                                         if vim.wo.diff then
@@ -89,7 +92,7 @@ return {
                                         else
                                                 gitsigns.nav_hunk('next')
                                         end
-                                end)
+                                end, opts_next)
 
                                 map('n', '[g', function()
                                         if vim.wo.diff then
@@ -97,7 +100,7 @@ return {
                                         else
                                                 gitsigns.nav_hunk('prev')
                                         end
-                                end)
+                                end, opts_prev)
                         end,
                 },
         },
@@ -112,6 +115,7 @@ return {
                         indent = { char = '▏' },
                 },
         },
+
         -- 4. TOGGLETERM
         {
                 'akinsho/toggleterm.nvim',
