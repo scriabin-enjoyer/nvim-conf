@@ -1,5 +1,5 @@
 -- =============================================================================
--- CONTENTS
+-- GREP
 -- 1. OPTIONS & GLOBALS
 -- 2. BASIC KEYMAPS
 -- 3. BASIC AUTOCOMMANDS
