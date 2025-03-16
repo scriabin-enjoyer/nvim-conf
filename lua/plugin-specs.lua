@@ -4,13 +4,16 @@
 -- 2. GITSIGNS
 -- 3. INDENTBLANKLINES IBL
 -- 4. TOGGLETERM
+-- 5. TELESCOPE
 
 return {
         -- 0. WHICHKEY ; see https://github.com/folke/which-key.nvim
         {
                 "folke/which-key.nvim",
+                enabled = true,
                 event = "VeryLazy",
                 opts = {
+                        preset = 'helix',
                         delay = 0,
                         icons = {
                                 mappings = vim.g.have_nerd_font,
