@@ -210,4 +210,64 @@ return {
 
                 },
         },
+        -- 5. TELESCOPE
+        {
+                'nvim-telescope/telescope.nvim',
+                event = 'VimEnter',
+                branch = '0.1.x',
+                dependencies = {
+                        'nvim-lua/plenary.nvim',
+                        {
+                                'nvim-telescope/telescope-fzf-native.nvim',
+                                build = 'make',
+                                cond = function()
+                                        return vim.fn.executable 'make' == 1
+                                end,
+                        },
+                        {
+                                'nvim-telescope/telescope-ui-select.nvim'
+                        },
+                },
+                config = function()
+                        -- Two important keymaps to use while in Telescope are:
+                        --  - Insert mode: <c-/>
+                        --  - Normal mode: ?
+                        require('telescope').setup({
+                                defaults = {
+                                        layout_config = {
+                                                horizontal = {
+                                                        preview_width = 0.5
+                                                }
+                                        }
+                                },
+                                pickers = {},
+                                extensions = {
+                                        ['ui-select'] = {
+                                                require('telescope.themes').get_dropdown(),
+                                        }
+                                },
+                        })
+
+                        -- Enable Telescope extensions if they are installed
+                        require('telescope').load_extension('fzf')
+                        require('telescope').load_extension('ui-select')
+                        -- p := phind
+                        local builtin = require 'telescope.builtin'
+                        vim.keymap.set('n', '<leader>ph', builtin.help_tags, { desc = '[S]earch [H]elp' })
+                        vim.keymap.set('n', '<leader>pk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+                        vim.keymap.set('n', '<leader>pf', builtin.find_files, { desc = '[S]earch [F]iles' })
+                        vim.keymap.set('n', '<leader>pt', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+                        vim.keymap.set('n', '<leader>pw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+                        vim.keymap.set('n', '<leader>pg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+                        vim.keymap.set('n', '<leader>pd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+                        vim.keymap.set('n', '<leader>po', builtin.oldfiles, { desc = '[S]earch Old [F]iles' })
+                        vim.keymap.set('n', '<leader>pb', builtin.buffers, { desc = '[S]earch Buffers' })
+                        -- g := git
+                        vim.keymap.set('n', '<leader>gf', builtin.git_files, { desc = '[S]earch Git [F]iles' })
+                        vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = '[S]earch Git Branches' })
+                        vim.keymap.set('n', '<leader>gca', builtin.git_commits, { desc = '[S]earch Git Commits (All)' })
+                        vim.keymap.set('n', '<leader>gcb', builtin.git_bcommits, { desc = '[S]earch Git Commits (Buffer)' })
+                        vim.keymap.set('n', '<leader>gs', builtin.git_status, { desc = '[S]earch Git Status' })
+                end,
+        },
 }
