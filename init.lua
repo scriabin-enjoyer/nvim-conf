@@ -46,6 +46,8 @@ vim.opt.expandtab = true
 vim.opt.shiftwidth = 8
 vim.opt.tabstop = 8
 vim.opt.completeopt = { "menuone", "noselect" }
+vim.opt.smartcase = true
+vim.opt.ignorecase = true
 vim.schedule(function()
         vim.opt.clipboard = 'unnamedplus'
 end)
@@ -56,12 +58,9 @@ vim.opt.termguicolors = true
 vim.opt.wrap = true
 vim.opt.swapfile = false
 vim.opt.showtabline = 2
-vim.opt.completeopt = { "menuone", "noselect" }
 vim.opt.backup = false
 vim.opt.writebackup = false
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
 --]]
 
 print("Options set")
