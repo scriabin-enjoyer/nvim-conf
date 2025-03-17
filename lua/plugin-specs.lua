@@ -149,6 +149,7 @@ return {
                                 -- to pass to map
                                 local opts_next = { desc = 'Goto next hunk' }
                                 local opts_prev = { desc = 'Goto prev hunk' }
+                                local opts_preview = { desc = 'Preview hunk' }
                                 -- Navigation ; find next hunk
                                 map('n', ']g', function()
                                         if vim.wo.diff then
@@ -165,6 +166,8 @@ return {
                                                 gitsigns.nav_hunk('prev')
                                         end
                                 end, opts_prev)
+                                -- Preview Hunk in little window
+                                map('n', '<leader>gp', gitsigns.preview_hunk, opts_preview)
                         end,
                 },
         },
