@@ -168,6 +168,7 @@ vim.api.nvim_create_autocmd("Filetype", {
 -- 4. PLUGIN LIST
 -- =============================================================================
 
+-- see ./lua/plugin-specs.lua
 local plugins = require('plugin-specs')
 
 -- =============================================================================
@@ -199,6 +200,7 @@ require('lazy').setup({
         }
 })
 
+print("Plugins Initialized")
 
 -- =============================================================================
 -- 6. PLUGIN CONFIGURATIONS
