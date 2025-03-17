@@ -229,17 +229,18 @@ return {
                 config = function()
                         require('telescope').setup({
                                 defaults = {
+                                        layout_strategy = 'vertical',
                                         layout_config = {
                                                 horizontal = {
-                                                        preview_width = 0.5
+                                                        preview_width = 0.6
                                                 }
                                         }
                                 },
                                 pickers = {},
                                 extensions = {
-                                        ['ui-select'] = {
-                                                require('telescope.themes').get_dropdown(),
-                                        }
+                                --         ['ui-select'] = {
+                                --                 require('telescope.themes').get_dropdown(),
+                                --         }
                                 },
                         })
                         -- Enable Telescope extensions if they are installed
