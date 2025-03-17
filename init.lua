@@ -133,6 +133,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Filetype Indents; locally scoped to block
+-- TODO: move to after/
 do
         local function indent_filetypes(ft, s)
                 vim.api.nvim_create_autocmd("Filetype", {
@@ -192,7 +193,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Plugin Installations
+-- Plugin Installations ; see https://lazy.folke.io/configuration for options
 require('lazy').setup({
         spec = plugins,
         rocks = {
@@ -206,4 +207,4 @@ print("Plugins Initialized")
 -- 6. PLUGIN CONFIGURATIONS
 -- =============================================================================
 
-vim.cmd.colorscheme 'vscode'
+-- vim.cmd.colorscheme 'vscode'

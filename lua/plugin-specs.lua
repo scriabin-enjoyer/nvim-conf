@@ -5,6 +5,7 @@
 -- 3. INDENTBLANKLINES IBL
 -- 4. TOGGLETERM
 -- 5. TELESCOPE
+-- 6. LSP
 
 return {
         -- 0. WHICHKEY ; see https://github.com/folke/which-key.nvim
@@ -75,15 +76,20 @@ return {
                 -- REMEMBER TO SET colorscheme IN TOP LEVEL init.lua
                 "Mofiqul/vscode.nvim",
                 priority = 1000,
-                opts = {
-                        transparent = true,
-                        italic_comments = true,
-                        underline_links = true,
-                        terminal_colors = false,
-                        color_overrides = {
-                                vscBack = "#0a0a0a",
-                        },
-                },
+                lazy = false,
+                config = function()
+                        local opts = {
+                                transparent = true,
+                                italic_comments = true,
+                                underline_links = true,
+                                terminal_colors = false,
+                                color_overrides = {
+                                        vscBack = "#0a0a0a",
+                                },
+                        }
+                        require('vscode').setup(opts)
+                        vim.cmd [[colorscheme vscode]]
+                end,
         },
 
         -- 2. GITSIGNS ; see https://github.com/lewis6991/gitsigns.nvim
@@ -275,7 +281,6 @@ return {
                                         prompt_title = 'Live Grep in Open Files',
                                 }
                         end, { desc = '[S]earch [/] in Open Files' })
-
                         -- Shortcut for searching your Neovim configuration files
                         vim.keymap.set('n', '<leader>nvim', function()
                                 builtin.find_files {
