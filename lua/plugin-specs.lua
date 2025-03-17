@@ -241,9 +241,10 @@ return {
                                 },
                                 pickers = {},
                                 extensions = {
-                                --         ['ui-select'] = {
-                                --                 require('telescope.themes').get_dropdown(),
-                                --         }
+                                         ['ui-select'] = {
+                                                 require('telescope.themes').get_dropdown(),
+                                         },
+                                         fzf = {},
                                 },
                         })
                         -- Enable Telescope extensions if they are installed
@@ -261,12 +262,27 @@ return {
                         vim.keymap.set('n', '<leader>po', builtin.oldfiles, { desc = '[S]earch Old [F]iles' })
                         vim.keymap.set('n', '<leader>pb', builtin.buffers, { desc = '[S]earch Buffers' })
                         -- g := git
-                        vim.keymap.set('n', '<leader>gg', builtin.git_files, { desc = '[S]earch Git [F]iles' })
+                        vim.keymap.set('n', '<leader>gf', builtin.git_files, { desc = '[S]earch Git [F]iles' })
                         vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = '[S]earch Git Branches' })
                         vim.keymap.set('n', '<leader>gca', builtin.git_commits, { desc = '[S]earch Git Commits (All)' })
                         vim.keymap.set('n', '<leader>gcb', builtin.git_bcommits, { desc = '[S]earch Git Commits (Buffer)' })
                         vim.keymap.set('n', '<leader>gst', builtin.git_status, { desc = '[S]earch Git Status' })
                         vim.keymap.set('n', '<leader>gsh', builtin.git_stash, { desc = '[S]earch Git Stash' })
+                        -- some custom configurations
+                        vim.keymap.set('n', '<leader>pp', function()
+                                builtin.live_grep {
+                                        grep_open_files = true,
+                                        prompt_title = 'Live Grep in Open Files',
+                                }
+                        end, { desc = '[S]earch [/] in Open Files' })
+
+                        -- Shortcut for searching your Neovim configuration files
+                        vim.keymap.set('n', '<leader>nvim', function()
+                                builtin.find_files {
+                                        cwd = vim.fn.stdpath 'config',
+                                        prompt_title = 'Live Grep Nvim Config',
+                                }
+                        end, { desc = '[S]earch [N]eovim files' })
                 end,
         },
 }
