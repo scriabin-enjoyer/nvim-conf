@@ -10,7 +10,6 @@
 return {
         -- 0. COLORSCHEME ; see https://github.com/Mofiqul/vscode.nvim
         {
-                -- REMEMBER TO SET colorscheme IN TOP LEVEL init.lua
                 "Mofiqul/vscode.nvim",
                 priority = 1000,
                 lazy = false,
@@ -245,7 +244,15 @@ return {
                                                 }
                                         }
                                 },
-                                pickers = {},
+                                pickers = {
+                                        find_files = {
+                                                hidden = true,
+                                                no_ignore = true,
+                                                no_ignore_parent = true,
+                                                file_ignore_patterns = { '.git', },
+                                        },
+
+                                },
                                 extensions = {
                                          ['ui-select'] = {
                                                  require('telescope.themes').get_dropdown(),
@@ -256,19 +263,24 @@ return {
                         -- Enable Telescope extensions if they are installed
                         require('telescope').load_extension('fzf')
                         require('telescope').load_extension('ui-select')
-                        -- p := phind
+                        -- Telescope Keymaps
                         local builtin = require 'telescope.builtin'
-                        vim.keymap.set('n', '<leader>ph', builtin.help_tags, { desc = '[S]earch [H]elp' })
-                        vim.keymap.set('n', '<leader>pk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-                        vim.keymap.set('n', '<leader>pt', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+                        -- file pickers
                         vim.keymap.set('n', '<leader>pf', builtin.find_files, { desc = '[S]earch [F]iles' })
                         vim.keymap.set('n', '<leader>pw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
                         vim.keymap.set('n', '<leader>pg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+                        vim.keymap.set('n', '<leader>gf', builtin.git_files, { desc = '[S]earch Git [F]iles' })
+                        -- vim pickers
+                        vim.keymap.set('n', '<leader>ph', builtin.help_tags, { desc = '[S]earch [H]elp' })
+                        vim.keymap.set('n', '<leader>pk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+                        vim.keymap.set('n', '<leader>pt', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
                         vim.keymap.set('n', '<leader>pd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
                         vim.keymap.set('n', '<leader>po', builtin.oldfiles, { desc = '[S]earch Old [F]iles' })
                         vim.keymap.set('n', '<leader>pb', builtin.buffers, { desc = '[S]earch Buffers' })
-                        -- g := git
-                        vim.keymap.set('n', '<leader>gf', builtin.git_files, { desc = '[S]earch Git [F]iles' })
+                        vim.keymap.set('n', '<leader>pq', builtin.quickfix, { desc = '[S]earch Quickfix List' })
+                        vim.keymap.set('n', '<leader>pm', builtin.marks, { desc = '[S]earch Marks' })
+                        vim.keymap.set('n', '<leader>pc', builtin.colorscheme, { desc = '[S]earch Colorschemes' })
+                        -- git pickers
                         vim.keymap.set('n', '<leader>gb', builtin.git_branches, { desc = '[S]earch Git Branches' })
                         vim.keymap.set('n', '<leader>gca', builtin.git_commits, { desc = '[S]earch Git Commits (All)' })
                         vim.keymap.set('n', '<leader>gcb', builtin.git_bcommits, { desc = '[S]earch Git Commits (Buffer)' })
@@ -284,6 +296,7 @@ return {
                         -- Shortcut for searching your Neovim configuration files
                         vim.keymap.set('n', '<leader>nvim', function()
                                 builtin.find_files {
+                                        no_ignore = false,
                                         cwd = vim.fn.stdpath 'config',
                                         prompt_title = 'Live Grep Nvim Config',
                                 }
