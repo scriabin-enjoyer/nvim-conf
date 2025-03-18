@@ -128,7 +128,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         desc = 'Highlight when yanking (copying) text',
         group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
         callback = function()
-                vim.highlight.on_yank()
+                vim.hl.on_yank()
         end,
 })
 
@@ -137,6 +137,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 do
         local function indent_filetypes(ft, s)
                 vim.api.nvim_create_autocmd("Filetype", {
+                        group = vim.api.nvim_create_augroup('set-ft-indent-opts', { clear = true }),
                         pattern = ft,
                         command = "setlocal sw=".. s .. " ts=" .. s .. " sts=" .. s .. " expandtab"
                 })
@@ -204,5 +205,6 @@ require('lazy').setup({
 print("Plugins Initialized")
 
 -- =============================================================================
--- 6. PLUGIN CONFIGURATIONS
+-- 6. LSP
 -- =============================================================================
+-- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320

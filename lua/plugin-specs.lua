@@ -254,10 +254,10 @@ return {
 
                                 },
                                 extensions = {
-                                         ['ui-select'] = {
-                                                 require('telescope.themes').get_dropdown(),
-                                         },
-                                         fzf = {},
+                                        ['ui-select'] = {
+                                                require('telescope.themes').get_dropdown(),
+                                        },
+                                        fzf = {},
                                 },
                         })
                         -- Enable Telescope extensions if they are installed
