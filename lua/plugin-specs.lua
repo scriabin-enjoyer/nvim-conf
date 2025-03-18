@@ -8,7 +8,28 @@
 -- 6. LSP
 
 return {
-        -- 0. WHICHKEY ; see https://github.com/folke/which-key.nvim
+        -- 0. COLORSCHEME ; see https://github.com/Mofiqul/vscode.nvim
+        {
+                -- REMEMBER TO SET colorscheme IN TOP LEVEL init.lua
+                "Mofiqul/vscode.nvim",
+                priority = 1000,
+                lazy = false,
+                config = function()
+                        local opts = {
+                                transparent = true,
+                                italic_comments = true,
+                                underline_links = true,
+                                terminal_colors = false,
+                                color_overrides = {
+                                        vscBack = "#0a0a0a",
+                                },
+                        }
+                        require('vscode').setup(opts)
+                        vim.cmd [[colorscheme vscode]]
+                end,
+        },
+
+        -- 1. WHICHKEY ; see https://github.com/folke/which-key.nvim
         {
                 "folke/which-key.nvim",
                 enabled = true,
@@ -69,27 +90,6 @@ return {
                         { '<leader>t', group = '[T]oggle' },
                         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
                 },
-        },
-
-        -- 1. COLORSCHEME ; see https://github.com/Mofiqul/vscode.nvim
-        {
-                -- REMEMBER TO SET colorscheme IN TOP LEVEL init.lua
-                "Mofiqul/vscode.nvim",
-                priority = 1000,
-                lazy = false,
-                config = function()
-                        local opts = {
-                                transparent = true,
-                                italic_comments = true,
-                                underline_links = true,
-                                terminal_colors = false,
-                                color_overrides = {
-                                        vscBack = "#0a0a0a",
-                                },
-                        }
-                        require('vscode').setup(opts)
-                        vim.cmd [[colorscheme vscode]]
-                end,
         },
 
         -- 2. GITSIGNS ; see https://github.com/lewis6991/gitsigns.nvim
@@ -289,5 +289,10 @@ return {
                                 }
                         end, { desc = '[S]earch [N]eovim files' })
                 end,
+        },
+
+        -- 6. LSP
+        {
+
         },
 }
