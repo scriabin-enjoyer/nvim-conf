@@ -149,7 +149,7 @@ do
         indent_filetypes("python", "4")
         indent_filetypes("c", "8")
         indent_filetypes("ruby", "2")
-        indent_filetypes("lua", "8")
+        indent_filetypes("lua", "4")
 end
 
 -- Fix HTML tag indenting; see :h html-indent
