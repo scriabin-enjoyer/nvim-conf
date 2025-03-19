@@ -48,14 +48,14 @@ vim.opt.tabstop = 8
 vim.opt.completeopt = { "menuone", "noselect" }
 vim.opt.smartcase = true
 vim.opt.ignorecase = true
+vim.opt.termguicolors = true
+vim.opt.wrap = true
 vim.schedule(function()
         vim.opt.clipboard = 'unnamedplus'
 end)
 
 --[[ For Reference:
 vim.opt.cursorline = true
-vim.opt.termguicolors = true
-vim.opt.wrap = true
 vim.opt.swapfile = false
 vim.opt.showtabline = 2
 vim.opt.backup = false
