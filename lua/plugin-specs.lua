@@ -240,9 +240,18 @@ return {
                                         layout_strategy = 'vertical',
                                         layout_config = {
                                                 horizontal = {
+                                                        preview_cutoff = 1,
                                                         preview_width = 0.6
-                                                }
-                                        }
+                                                },
+                                                vertical = {
+                                                        preview_cutoff = 1,
+                                                },
+                                        },
+                                        mappings = {
+                                                i = {
+                                                        -- ['<C-v>'] = require('telescope.actions.layout').toggle_preview,
+                                                },
+                                        },
                                 },
                                 pickers = {
                                         find_files = {
@@ -251,7 +260,6 @@ return {
                                                 no_ignore_parent = true,
                                                 file_ignore_patterns = { '.git', },
                                         },
-
                                 },
                                 extensions = {
                                         ['ui-select'] = {
