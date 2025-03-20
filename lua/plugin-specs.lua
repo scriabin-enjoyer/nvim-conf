@@ -7,14 +7,39 @@
 -- 5. TOGGLETERM
 -- 6. TELESCOPE
 -- 7. TREESITTER
--- 8. L            require("nvim-treesitter.configs")SP
+-- 8. LSP & COMPLETIONS
 
 return {
-    -- 0. COLORSCHEMES ; see https://github.com/Mofiqul/vscode.nvim
+    -- 0. COLORSCHEMES 
+    -- TokyoDark
     {
-        "Mofiqul/vscode.nvim",
+        'https://github.com/tiagovla/tokyodark.nvim',
         priority = 1000,
         lazy = false,
+        opts = {
+            transparent_background = true, -- set background to transparent
+            gamma = 1.00, -- adjust the brightness of the theme
+            styles = {
+                comments = { italic = true }, -- style for comments
+                keywords = { italic = false }, -- style for keywords
+                identifiers = { italic = false }, -- style for identifiers
+                functions = {}, -- style for functions
+                variables = {}, -- style for variables
+            },
+            custom_highlights = {} or function(highlights, palette) return {} end, -- extend highlights
+            custom_palette = {} or function(palette) return {} end, -- extend palette
+            terminal_colors = true, -- enable terminal colors
+        },
+        config = function(_, opts)
+            require("tokyodark").setup(opts) -- calling setup is optional
+            vim.cmd [[colorscheme tokyodark]]
+        end,
+    },
+    -- vscode
+    {
+        "https://github.com/Mofiqul/vscode.nvim",
+        -- priority = 1000,
+        lazy = true,
         config = function()
             local opts = {
                 transparent = true,
@@ -26,12 +51,28 @@ return {
                 },
             }
             require('vscode').setup(opts)
-            vim.cmd [[colorscheme vscode]]
+            -- vim.cmd [[colorscheme vscode]]
         end,
     },
-    -- Material Theme ; https://github.com/marko-cerovac/material.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
+    -- Material Theme
     {
-        'marko-cerovac/material.nvim'
+        'https://github.com/marko-cerovac/material.nvim',
+    },
+    -- Kanagawa
+    {
+        'https://github.com/rebelot/kanagawa.nvim',
+    },
+    -- Onedark
+    {
+        'https://github.com/olimorris/onedarkpro.nvim',
+    },
+    -- Github
+    {
+        'https://github.com/projekt0n/github-nvim-theme',
+    },
+    -- Moonfly
+    {
+        'https://github.com/bluz71/vim-moonfly-colors'
     },
 
     -- 1. WHICHKEY ; see https://github.com/folke/which-key.nvim
@@ -99,7 +140,7 @@ return {
 
     -- 2. RAINBOW DELIMITERS
     {
-        'HiPhish/rainbow-delimiters.nvim'
+        'HiPhish/rainbow-delimiters.nvim',
     },
 
     -- 3. GITSIGNS ; see https://github.com/lewis6991/gitsigns.nvim
@@ -132,7 +173,7 @@ return {
             },
             auto_attach = true,
             attach_to_untracked = false,
-            current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+            current_line_blame = true, -- Toggle with `:Gitsigns toggle_current_line_blame`
             current_line_blame_opts = {
                 virt_text = true,
                 virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
@@ -343,7 +384,7 @@ return {
                 -- ignore_install = {},
                 highlight = {
                     enable = true,
-                    disable = {},
+                    disable = {'vimdoc'},
                     -- if ruby indenting doesn't work, add 'ruby' below and disable indent for it in indent.disable field below
                     additional_vim_regex_highlighting = {'ruby'},
                 },

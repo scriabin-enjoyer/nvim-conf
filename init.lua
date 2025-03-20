@@ -208,3 +208,18 @@ print("Plugins Initialized")
 -- 6. LSP
 -- =============================================================================
 -- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
+
+
+
+-- =============================================================================
+-- X. NOTES
+-- =============================================================================
+vim.cmd [[colo]]
+-- vscode
+-- tokyodark
+-- material_deepocean
+-- moonfly
+-- onedark_dark
+-- github_dark_defualt
+-- kanagawa_wave
+-- kanagawa_dragon
