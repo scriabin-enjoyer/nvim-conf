@@ -7,8 +7,11 @@
 -- 5. TOGGLETERM
 -- 6. TELESCOPE
 -- 7. TREESITTER
--- 8. LSP & COMPLETIONS
+-- 8. LSP & CMP
+-- OTHER
 
+-- NOTE: Setting either 'opts' or 'config' in any spec will cause Lazy to automatically load the plugin when we call require('lazy').setup(...)
+-- Otherwise, the plugin is loaded only when we explicitly require() it.
 return {
     -- 0. COLORSCHEMES 
     -- TokyoDark
@@ -16,22 +19,21 @@ return {
         'https://github.com/tiagovla/tokyodark.nvim',
         priority = 1000,
         lazy = false,
-        opts = {
-            transparent_background = true, -- set background to transparent
-            gamma = 1.00, -- adjust the brightness of the theme
-            styles = {
-                comments = { italic = true }, -- style for comments
-                keywords = { italic = false }, -- style for keywords
-                identifiers = { italic = false }, -- style for identifiers
-                functions = {}, -- style for functions
-                variables = {}, -- style for variables
-            },
-            custom_highlights = {} or function(highlights, palette) return {} end, -- extend highlights
-            custom_palette = {} or function(palette) return {} end, -- extend palette
-            terminal_colors = true, -- enable terminal colors
-        },
-        config = function(_, opts)
-            require("tokyodark").setup(opts) -- calling setup is optional
+        config = function()
+            require("tokyodark").setup({
+                transparent_background = true, -- set background to transparent
+                gamma = 1.00, -- adjust the brightness of the theme
+                styles = {
+                    comments = { italic = true }, -- style for comments
+                    keywords = { italic = false }, -- style for keywords
+                    identifiers = { italic = false }, -- style for identifiers
+                    functions = {}, -- style for functions
+                    variables = {}, -- style for variables
+                },
+                custom_highlights = {} or function(highlights, palette) return {} end, -- extend highlights
+                custom_palette = {} or function(palette) return {} end, -- extend palette
+                terminal_colors = true, -- enable terminal colors
+            })
             vim.cmd [[colorscheme tokyodark]]
         end,
     },
@@ -396,7 +398,7 @@ return {
         end,
     },
 
-    -- 7. LSP? Completion?
+    -- 7. LSP & CMP
     {'neovim/nvim-lspconfig'},
     {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
@@ -406,3 +408,6 @@ return {
     {'hrsh7th/cmp-cmdline'},
     {'hrsh7th/nvim-cmp'},
 }
+
+-- OTHER
+-- https://github.com/stevearc/oil.nvim
