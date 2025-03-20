@@ -1,14 +1,16 @@
 -- CONTENTS
--- 0. WHICHKEY
--- 1. COLORSCHEME
--- 2. GITSIGNS
--- 3. INDENTBLANKLINES IBL
--- 4. TOGGLETERM
--- 5. TELESCOPE
--- 6. LSP
+-- 0. COLORSCHEMES
+-- 1. WHICHKEY
+-- 2. RAINBOW DELIMITERS
+-- 3. GITSIGNS
+-- 4. INDENTBLANKLINES IBL
+-- 5. TOGGLETERM
+-- 6. TELESCOPE
+-- 7. TREESITTER
+-- 8. L            require("nvim-treesitter.configs")SP
 
 return {
-    -- 0. COLORSCHEME ; see https://github.com/Mofiqul/vscode.nvim
+    -- 0. COLORSCHEMES ; see https://github.com/Mofiqul/vscode.nvim
     {
         "Mofiqul/vscode.nvim",
         priority = 1000,
@@ -26,6 +28,10 @@ return {
             require('vscode').setup(opts)
             vim.cmd [[colorscheme vscode]]
         end,
+    },
+    -- Material Theme ; https://github.com/marko-cerovac/material.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
+    {
+        'marko-cerovac/material.nvim'
     },
 
     -- 1. WHICHKEY ; see https://github.com/folke/which-key.nvim
@@ -91,7 +97,12 @@ return {
         },
     },
 
-    -- 2. GITSIGNS ; see https://github.com/lewis6991/gitsigns.nvim
+    -- 2. RAINBOW DELIMITERS
+    {
+        'HiPhish/rainbow-delimiters.nvim'
+    },
+
+    -- 3. GITSIGNS ; see https://github.com/lewis6991/gitsigns.nvim
     {
         'lewis6991/gitsigns.nvim',
         opts = {
@@ -177,7 +188,7 @@ return {
         },
     },
 
-    -- 3. INDENTBLANKLINES IBL ; see https://github.com/lukas-reineke/indent-blankline.nvim
+    -- 4. INDENTBLANKLINES IBL ; see https://github.com/lukas-reineke/indent-blankline.nvim
     {
         "lukas-reineke/indent-blankline.nvim",
         main = "ibl",
@@ -188,7 +199,7 @@ return {
         },
     },
 
-    -- 4. TOGGLETERM
+    -- 5. TOGGLETERM
     {
         'akinsho/toggleterm.nvim',
         version = "*",
@@ -216,7 +227,7 @@ return {
         },
     },
 
-    -- 5. TELESCOPE
+    -- 6. TELESCOPE
     {
         'nvim-telescope/telescope.nvim',
         event = 'VimEnter',
@@ -311,4 +322,46 @@ return {
             end, { desc = '[S]earch [N]eovim files' })
         end, -- END CONFIG CALLBACK
     },
+
+    -- 7. TREESITTER
+    {
+        "nvim-treesitter/nvim-treesitter",
+        build = ":TSUpdate",
+        config = function() 
+            local configs = require("nvim-treesitter.configs")
+            configs.setup({
+                ensure_installed = {
+                    'c', 'lua', 'html', 'css', 'ruby', 'python', 'javascript',
+                    'sql', 'yaml', 'json', 'bash', 'regex', 'markdown',
+                    'markdown_inline',
+                },
+                -- Install parsers synchronously (only applied to `ensure_installed`)
+                sync_install = false,
+                -- Automatically install missing parsers when entering buffer
+                auto_install = true,
+                -- List of parsers to ignore installing (or "all")
+                -- ignore_install = {},
+                highlight = {
+                    enable = true,
+                    disable = {},
+                    -- if ruby indenting doesn't work, add 'ruby' below and disable indent for it in indent.disable field below
+                    additional_vim_regex_highlighting = {'ruby'},
+                },
+                indent = {
+                    enable = true,
+                    disable = {'ruby'},
+                },
+            })
+        end,
+    },
+
+    -- 7. LSP? Completion?
+    {'neovim/nvim-lspconfig'},
+    {'williamboman/mason.nvim'},
+    {'williamboman/mason-lspconfig.nvim'},
+    {'hrsh7th/cmp-nvim-lsp'},
+    {'hrsh7th/cmp-buffer'},
+    {'hrsh7th/cmp-path'},
+    {'hrsh7th/cmp-cmdline'},
+    {'hrsh7th/nvim-cmp'},
 }
