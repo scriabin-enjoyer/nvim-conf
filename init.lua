@@ -6,8 +6,9 @@
 --      - filetype indents
 -- 4. PLUGIN LIST
 -- 5. LAZY (plugin installation)
--- 6. PLUGIN CONFIGURATIONS
--- 7. LSP CONFIGURATION
+-- 6. LSP
+-- 7. AUTOCOMPLETE
+-- X. EXTRAS
 -- =============================================================================
 
 print("Initializing Config")
@@ -15,6 +16,7 @@ print("Initializing Config")
 -- =============================================================================
 -- 1. OPTIONS & GLOBALS
 -- =============================================================================
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = false
@@ -22,7 +24,6 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
 vim.opt.breakindent = true
--- vim.opt.undofile = true
 vim.opt.numberwidth = 4
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
@@ -54,14 +55,11 @@ vim.schedule(function()
         vim.opt.clipboard = 'unnamedplus'
 end)
 
---[[ For Reference:
-vim.opt.cursorline = true
-vim.opt.swapfile = false
-vim.opt.showtabline = 2
-vim.opt.backup = false
-vim.opt.writebackup = false
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
---]]
+-- vim.opt.undofile = true
+-- vim.opt.swapfile = false
+-- vim.opt.showtabline = 2
+-- vim.opt.backup = false
+-- vim.opt.writebackup = false
 
 print("Options set")
 
@@ -133,7 +131,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Filetype Indents; locally scoped to block
--- TODO: move to after/
+-- TODO: move to after/ or ftplugin
 do
         local function indent_filetypes(ft, s)
                 vim.api.nvim_create_autocmd("Filetype", {
@@ -170,7 +168,6 @@ vim.api.nvim_create_autocmd("Filetype", {
 -- 4. PLUGIN LIST
 -- =============================================================================
 
--- see ./lua/plugin-specs.lua
 local plugins = require('plugin-specs')
 
 -- =============================================================================
@@ -207,13 +204,24 @@ print("Plugins Initialized")
 -- =============================================================================
 -- 6. LSP
 -- =============================================================================
+
+
+
+-- =============================================================================
+-- X. EXTRAS
+-- =============================================================================
+
 -- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
 
-
-
--- =============================================================================
--- X. NOTES
--- =============================================================================
+-- Diagnostic settings
+vim.diagnostic.config {
+    virtual_text = false,
+    signs = true,
+    underline = true,
+    update_in_insert = false,
+    severity_sort = false,
+}
+vim.keymap.set('n', '<leader>ibl', ':IBLToggle<CR>', { desc = 'Toggle IBL plugin' })
 vim.cmd [[colo]]
 -- vscode
 -- tokyodark
@@ -223,3 +231,17 @@ vim.cmd [[colo]]
 -- github_dark_defualt
 -- kanagawa_wave
 -- kanagawa_dragon
+
+-- for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do vim.api.nvim_set_hl(0, group, {}) end
+
+--[[ Here for reference:
+local toggle_lsp_client = function()
+  local buf = vim.api.nvim_get_current_buf()
+  local clients = vim.lsp.get_clients({ bufnr = buf })
+  if not vim.tbl_isempty(clients) then
+    vim.cmd("LspStop")
+  else
+    vim.cmd("LspStart")
+  end
+end
+--]]
