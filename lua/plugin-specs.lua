@@ -17,31 +17,31 @@ return {
     -- TokyoDark
     {
         'https://github.com/tiagovla/tokyodark.nvim',
-        priority = 1000,
-        lazy = false,
+        priority = 999,
+        -- lazy = true,
         config = function()
             require("tokyodark").setup({
-                transparent_background = true, -- set background to transparent
+                transparent_background = false, -- set background to transparent
                 gamma = 1.00, -- adjust the brightness of the theme
                 styles = {
                     comments = { italic = true }, -- style for comments
                     keywords = { italic = false }, -- style for keywords
                     identifiers = { italic = false }, -- style for identifiers
-                    functions = {}, -- style for functions
-                    variables = {}, -- style for variables
+                    functions = { italic = false }, -- style for functions
+                    variables = { italic = false }, -- style for variables
                 },
                 custom_highlights = {} or function(highlights, palette) return {} end, -- extend highlights
                 custom_palette = {} or function(palette) return {} end, -- extend palette
                 terminal_colors = true, -- enable terminal colors
             })
-            vim.cmd [[colorscheme tokyodark]]
+            -- vim.cmd [[colorscheme tokyodark]]
         end,
     },
     -- vscode
     {
         "https://github.com/Mofiqul/vscode.nvim",
-        -- priority = 1000,
-        lazy = true,
+        priority = 1000,
+        lazy = false,
         config = function()
             local opts = {
                 transparent = true,
@@ -53,28 +53,38 @@ return {
                 },
             }
             require('vscode').setup(opts)
-            -- vim.cmd [[colorscheme vscode]]
+            vim.cmd [[colorscheme vscode]]
         end,
     },
     -- Material Theme
     {
         'https://github.com/marko-cerovac/material.nvim',
+        priority = 1000,
+        -- lazy = true,
     },
     -- Kanagawa
     {
         'https://github.com/rebelot/kanagawa.nvim',
+        priority = 1000,
+        -- lazy = true,
     },
     -- Onedark
     {
         'https://github.com/olimorris/onedarkpro.nvim',
+        priority = 1000,
+        -- lazy = true,
     },
     -- Github
     {
         'https://github.com/projekt0n/github-nvim-theme',
+        priority = 1000,
+        -- lazy = false,
     },
     -- Moonfly
     {
-        'https://github.com/bluz71/vim-moonfly-colors'
+        'https://github.com/bluz71/vim-moonfly-colors',
+        priority = 1000,
+        -- lazy = true,
     },
 
     -- 1. WHICHKEY ; see https://github.com/folke/which-key.nvim
@@ -306,6 +316,9 @@ return {
                             -- ['<C-v>'] = require('telescope.actions.layout').toggle_preview,
                         },
                     },
+                    preview = {
+                        treesitter = false,
+                    }
                 },
                 pickers = {
                     find_files = {
@@ -407,6 +420,17 @@ return {
     {'hrsh7th/cmp-path'},
     {'hrsh7th/cmp-cmdline'},
     {'hrsh7th/nvim-cmp'},
+    {
+        "folke/lazydev.nvim",
+        ft = "lua", -- only load on lua files
+        opts = {
+            library = {
+                -- See the configuration section for more details
+                -- Load luvit types when the `vim.uv` word is found
+                { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+            },
+        },
+    },
 }
 
 -- OTHER
