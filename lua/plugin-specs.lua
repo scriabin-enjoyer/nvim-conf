@@ -247,9 +247,12 @@ return {
         main = "ibl",
         ---@module "ibl"
         ---@type ibl.config
-        opts = {
-            indent = { char = '▏' },
-        },
+        config = function()
+            require('ibl').setup({
+                indent = { char = '▏' },
+            })
+            vim.keymap.set('n', '<leader>ibl', ':IBLToggle<CR>', { desc = 'Toggle IBL plugin' })
+        end,
     },
 
     -- 5. TOGGLETERM
@@ -401,11 +404,11 @@ return {
                     enable = true,
                     disable = {'vimdoc'},
                     -- if ruby indenting doesn't work, add 'ruby' below and disable indent for it in indent.disable field below
-                    additional_vim_regex_highlighting = {'ruby'},
+                    additional_vim_regex_highlighting = {'ruby', 'vimdoc'},
                 },
                 indent = {
                     enable = true,
-                    disable = {'ruby'},
+                    disable = {'ruby', 'vimdoc'},
                 },
             })
         end,
