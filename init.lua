@@ -147,23 +147,21 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Filetype Indents; locally scoped to block
 -- TODO: move to after/ or ftplugin
-do
-    local function indent_filetypes(ft, s)
-        vim.api.nvim_create_autocmd("Filetype", {
-            group = vim.api.nvim_create_augroup('set-ft-indent-opts', { clear = true }),
-            pattern = ft,
-            command = "setlocal sw=".. s .. " ts=" .. s .. " sts=" .. s .. " expandtab"
-        })
-    end
-
-    indent_filetypes("html", "2")
-    indent_filetypes("css", "2")
-    indent_filetypes("javascript", "8")
-    indent_filetypes("python", "4")
-    indent_filetypes("c", "8")
-    indent_filetypes("ruby", "2")
-    indent_filetypes("lua", "4")
+local function indent_filetypes(ft, s)
+    vim.api.nvim_create_autocmd("Filetype", {
+        group = vim.api.nvim_create_augroup('set-ft-indent-opts', { clear = true }),
+        pattern = ft,
+        command = "setlocal sw=".. s .. " ts=" .. s .. " sts=" .. s .. " expandtab"
+    })
 end
+
+indent_filetypes("html", "2")
+indent_filetypes("css", "2")
+indent_filetypes("javascript", "8")
+indent_filetypes("python", "4")
+indent_filetypes("c", "8")
+indent_filetypes("ruby", "2")
+indent_filetypes("lua", "4")
 
 -- Fix HTML tag indenting; see :h html-indent
 vim.api.nvim_create_autocmd("Filetype", {
@@ -231,117 +229,26 @@ require('mason').setup({
     },
 })
 
+
+require('lsp')
+
+-- TODO:
+--      - Create Server table and require('server-configs')
+--      - setup mason-lspconfig
 -- Ensure installed servers here. Configure server-specific settings later
 -- DON"T RUSE MASON TO INSTALL RUBY_LSP: 
 -- https://github.com/williamboman/mason.nvim/issues/1292
 -- https://shopify.github.io/ruby-lsp/editors.html#neovim
 require('mason-lspconfig').setup({
     ensure_installed = {
-        'lua_ls', 'clangd', 'html',
+        'lua_ls', 'clangd',
     },
 })
 
--- Add more client capabilities from cmp_nvim_lsp
--- Neovim does not implement entire LSP spec in core
--- We must add on these left-out capabilities and advertise them to our servers
-local lspconfig_defaults = require('lspconfig').util.default_config
-lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-    'force',
-    lspconfig_defaults.capabilities,
-    require('cmp_nvim_lsp').default_capabilities()
-)
-
--- Create autocommand to enable LSP features when the LspAttach event is triggered
-vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
-    callback = function(event)
-        -- Keymap Helper
-        local map = function(keys, func, desc, mode)
-            mode = mode or 'n'
-            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
-        end
-        map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-        map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-        map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-        map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-        map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-        map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
-        map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-        map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
-        map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-
-        -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
-        ---@param client vim.lsp.Client
-        ---@param method vim.lsp.protocol.Method
-        ---@param bufnr? integer some lsp support methods only in specific files
-        ---@return boolean
-        local function client_supports_method(client, method, bufnr)
-            if vim.fn.has 'nvim-0.11' == 1 then
-                return client:supports_method(method, bufnr)
-            else
-                return client.supports_method(method, { bufnr = bufnr })
-            end
-        end
-
-        local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
-            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-            --Highlight word under symbol
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-                buffer = event.buf,
-                group = highlight_augroup,
-                callback = vim.lsp.buf.document_highlight,
-            })
-            -- Remove highlight on move
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-                buffer = event.buf,
-                group = highlight_augroup,
-                callback = vim.lsp.buf.clear_references,
-            })
-            -- Cleanup
-            vim.api.nvim_create_autocmd('LspDetach', {
-                group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-                callback = function(event2)
-                    vim.lsp.buf.clear_references()
-                    vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
-                end,
-            })
-        end
-
-        -- The following code creates a keymap to toggle inlay hints in your
-        -- code, if the language server you are using supports them
-        -- This may be unwanted, since they displace some of your code
-        if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-            map('<leader>th', function()
-                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-            end, '[T]oggle Inlay [H]ints')
-        end
-    end,
-})
-
-vim.diagnostic.config {
-    severity_sort = true,
-    float = { border = 'rounded', source = 'if_many' },
-    underline = { severity = vim.diagnostic.severity.ERROR },
-    virtual_text = {
-        source = 'if_many',
-        spacing = 2,
-        format = function(diagnostic)
-            local diagnostic_message = {
-                [vim.diagnostic.severity.ERROR] = diagnostic.message,
-                [vim.diagnostic.severity.WARN] = diagnostic.message,
-                [vim.diagnostic.severity.INFO] = diagnostic.message,
-                [vim.diagnostic.severity.HINT] = diagnostic.message,
-            }
-            return diagnostic_message[diagnostic.severity]
-        end,
-    },
-}
-
+require'lspconfig'.lua_ls.setup{}
 -- =============================================================================
 -- X. EXTRAS
 -- =============================================================================
-
 -- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
 
 vim.cmd [[colo]]
