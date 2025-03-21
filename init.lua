@@ -52,7 +52,7 @@ vim.opt.ignorecase = true
 vim.opt.termguicolors = true
 vim.opt.wrap = true
 vim.schedule(function()
-        vim.opt.clipboard = 'unnamedplus'
+    vim.opt.clipboard = 'unnamedplus'
 end)
 
 -- vim.opt.undofile = true
@@ -115,6 +115,21 @@ vim.keymap.set("n", "<A-k>", ":m .-2<CR>==")
 vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
 vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
 
+-- Toggle LSP
+vim.keymap.set('n', '<leader>tl', function()
+    local buf = vim.api.nvim_get_current_buf()
+    local clients = vim.lsp.get_clients({ bufnr = buf })
+    if not buf then
+        if not vim.tbl_isempty(clients) then
+            vim.cmd("LspStop")
+        else
+            vim.cmd("LspStart")
+        end
+    else
+        vim.print('No Lsp clients attached!')
+    end
+end, { desc = '[T]oggle LSP Client' })
+
 print("Keymaps Initialized")
 
 -- =============================================================================
@@ -123,45 +138,45 @@ print("Keymaps Initialized")
 
 -- Highlist when yanking
 vim.api.nvim_create_autocmd('TextYankPost', {
-        desc = 'Highlight when yanking (copying) text',
-        group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-        callback = function()
-                vim.hl.on_yank()
-        end,
+    desc = 'Highlight when yanking (copying) text',
+    group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+    callback = function()
+        vim.hl.on_yank()
+    end,
 })
 
 -- Filetype Indents; locally scoped to block
 -- TODO: move to after/ or ftplugin
 do
-        local function indent_filetypes(ft, s)
-                vim.api.nvim_create_autocmd("Filetype", {
-                        group = vim.api.nvim_create_augroup('set-ft-indent-opts', { clear = true }),
-                        pattern = ft,
-                        command = "setlocal sw=".. s .. " ts=" .. s .. " sts=" .. s .. " expandtab"
-                })
-        end
+    local function indent_filetypes(ft, s)
+        vim.api.nvim_create_autocmd("Filetype", {
+            group = vim.api.nvim_create_augroup('set-ft-indent-opts', { clear = true }),
+            pattern = ft,
+            command = "setlocal sw=".. s .. " ts=" .. s .. " sts=" .. s .. " expandtab"
+        })
+    end
 
-        indent_filetypes("html", "2")
-        indent_filetypes("css", "2")
-        indent_filetypes("javascript", "8")
-        indent_filetypes("python", "4")
-        indent_filetypes("c", "8")
-        indent_filetypes("ruby", "2")
-        indent_filetypes("lua", "4")
+    indent_filetypes("html", "2")
+    indent_filetypes("css", "2")
+    indent_filetypes("javascript", "8")
+    indent_filetypes("python", "4")
+    indent_filetypes("c", "8")
+    indent_filetypes("ruby", "2")
+    indent_filetypes("lua", "4")
 end
 
 -- Fix HTML tag indenting; see :h html-indent
 vim.api.nvim_create_autocmd("Filetype", {
-        pattern = "html",
-        callback = function()
-                vim.cmd([[
+    pattern = "html",
+    callback = function()
+        vim.cmd([[
                 let g:html_indent_script1 = "inc"
                 let g:html_indent_style1 = "inc"
                 let g:html_indent_inctags = "p,style,script"
                 call HtmlIndent_CheckUserSettings()
                 ]])
-                print("html indent formatting fixed")
-        end
+        print("html indent formatting fixed")
+    end
 })
 
 -- =============================================================================
@@ -177,26 +192,26 @@ local plugins = require('plugin-specs')
 -- Bootstrap lazy.nvim; see https://lazy.folke.io/installation
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
-        local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-        local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-        if vim.v.shell_error ~= 0 then
-                vim.api.nvim_echo({
-                        { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-                        { out, "WarningMsg" },
-                        { "\nPress any key to exit..." },
-                }, true, {})
-                vim.fn.getchar()
-                os.exit(1)
-        end
+    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+    if vim.v.shell_error ~= 0 then
+        vim.api.nvim_echo({
+            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+            { out, "WarningMsg" },
+            { "\nPress any key to exit..." },
+        }, true, {})
+        vim.fn.getchar()
+        os.exit(1)
+    end
 end
 vim.opt.rtp:prepend(lazypath)
 
 -- Plugin Installations ; see https://lazy.folke.io/configuration for options
 require('lazy').setup({
-        spec = plugins,
-        rocks = {
-                enabled = false,
-        }
+    spec = plugins,
+    rocks = {
+        enabled = false,
+    }
 })
 
 print("Plugins Initialized")
@@ -217,6 +232,9 @@ require('mason').setup({
 })
 
 -- Ensure installed servers here. Configure server-specific settings later
+-- DON"T RUSE MASON TO INSTALL RUBY_LSP: 
+-- https://github.com/williamboman/mason.nvim/issues/1292
+-- https://shopify.github.io/ruby-lsp/editors.html#neovim
 require('mason-lspconfig').setup({
     ensure_installed = {
         'lua_ls', 'clangd', 'html',
@@ -227,15 +245,98 @@ require('mason-lspconfig').setup({
 -- Neovim does not implement entire LSP spec in core
 -- We must add on these left-out capabilities and advertise them to our servers
 local lspconfig_defaults = require('lspconfig').util.default_config
--- print(vim.inspect(lspconfig_defaults.capabilities))
-local asdf = require('cmp_nvim_lsp')
--- vim.print(lspconfig_defaults)
-vim.print(asdf.default_capabilities())
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
     'force',
     lspconfig_defaults.capabilities,
     require('cmp_nvim_lsp').default_capabilities()
 )
+
+-- Create autocommand to enable LSP features when the LspAttach event is triggered
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+    callback = function(event)
+        -- Keymap Helper
+        local map = function(keys, func, desc, mode)
+            mode = mode or 'n'
+            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+        end
+        map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+        map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+        map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+        map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+        map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+        map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+        map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+        map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+        map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+        -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
+        ---@param client vim.lsp.Client
+        ---@param method vim.lsp.protocol.Method
+        ---@param bufnr? integer some lsp support methods only in specific files
+        ---@return boolean
+        local function client_supports_method(client, method, bufnr)
+            if vim.fn.has 'nvim-0.11' == 1 then
+                return client:supports_method(method, bufnr)
+            else
+                return client.supports_method(method, { bufnr = bufnr })
+            end
+        end
+
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
+            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+            --Highlight word under symbol
+            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+                buffer = event.buf,
+                group = highlight_augroup,
+                callback = vim.lsp.buf.document_highlight,
+            })
+            -- Remove highlight on move
+            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+                buffer = event.buf,
+                group = highlight_augroup,
+                callback = vim.lsp.buf.clear_references,
+            })
+            -- Cleanup
+            vim.api.nvim_create_autocmd('LspDetach', {
+                group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+                callback = function(event2)
+                    vim.lsp.buf.clear_references()
+                    vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+                end,
+            })
+        end
+
+        -- The following code creates a keymap to toggle inlay hints in your
+        -- code, if the language server you are using supports them
+        -- This may be unwanted, since they displace some of your code
+        if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
+            map('<leader>th', function()
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+            end, '[T]oggle Inlay [H]ints')
+        end
+    end,
+})
+
+vim.diagnostic.config {
+    severity_sort = true,
+    float = { border = 'rounded', source = 'if_many' },
+    underline = { severity = vim.diagnostic.severity.ERROR },
+    virtual_text = {
+        source = 'if_many',
+        spacing = 2,
+        format = function(diagnostic)
+            local diagnostic_message = {
+                [vim.diagnostic.severity.ERROR] = diagnostic.message,
+                [vim.diagnostic.severity.WARN] = diagnostic.message,
+                [vim.diagnostic.severity.INFO] = diagnostic.message,
+                [vim.diagnostic.severity.HINT] = diagnostic.message,
+            }
+            return diagnostic_message[diagnostic.severity]
+        end,
+    },
+}
 
 -- =============================================================================
 -- X. EXTRAS
@@ -243,15 +344,6 @@ lspconfig_defaults.capabilities = vim.tbl_deep_extend(
 
 -- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
 
--- Diagnostic settings
-vim.diagnostic.config {
-    virtual_text = false,
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-    severity_sort = false,
-}
-vim.keymap.set('n', '<leader>ibl', ':IBLToggle<CR>', { desc = 'Toggle IBL plugin' })
 vim.cmd [[colo]]
 -- vscode
 -- tokyodark
@@ -264,14 +356,5 @@ vim.cmd [[colo]]
 
 -- for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do vim.api.nvim_set_hl(0, group, {}) end
 
---[[ Here for reference:
-local toggle_lsp_client = function()
-  local buf = vim.api.nvim_get_current_buf()
-  local clients = vim.lsp.get_clients({ bufnr = buf })
-  if not vim.tbl_isempty(clients) then
-    vim.cmd("LspStop")
-  else
-    vim.cmd("LspStart")
-  end
-end
+---[[ Here for reference:
 --]]
