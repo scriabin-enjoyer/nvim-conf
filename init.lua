@@ -205,7 +205,37 @@ print("Plugins Initialized")
 -- 6. LSP
 -- =============================================================================
 
+-- Setup Mason before everything else so we have servers to work with
+require('mason').setup({
+    ui = {
+        icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+        }
+    },
+})
 
+-- Ensure installed servers here. Configure server-specific settings later
+require('mason-lspconfig').setup({
+    ensure_installed = {
+        'lua_ls', 'clangd', 'html',
+    },
+})
+
+-- Add more client capabilities from cmp_nvim_lsp
+-- Neovim does not implement entire LSP spec in core
+-- We must add on these left-out capabilities and advertise them to our servers
+local lspconfig_defaults = require('lspconfig').util.default_config
+-- print(vim.inspect(lspconfig_defaults.capabilities))
+local asdf = require('cmp_nvim_lsp')
+-- vim.print(lspconfig_defaults)
+vim.print(asdf.default_capabilities())
+lspconfig_defaults.capabilities = vim.tbl_deep_extend(
+    'force',
+    lspconfig_defaults.capabilities,
+    require('cmp_nvim_lsp').default_capabilities()
+)
 
 -- =============================================================================
 -- X. EXTRAS
