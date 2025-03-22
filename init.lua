@@ -67,6 +67,9 @@ print("Options set")
 -- 2. BASIC KEYMAPS
 -- =============================================================================
 
+-- Leave insert
+vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Leave Insert Mode' })
+
 -- Clear highlights on search when pressing <Esc> in normal mode; See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
@@ -141,7 +144,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     desc = 'Highlight when yanking (copying) text',
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function()
-        vim.hl.on_yank()
+        vim.highlight.on_yank()
     end,
 })
 
@@ -231,6 +234,7 @@ require('mason').setup({
 
 
 require('lsp')
+require('server-configs')
 
 -- TODO:
 --      - Create Server table and require('server-configs')
@@ -239,6 +243,7 @@ require('lsp')
 -- DON"T RUSE MASON TO INSTALL RUBY_LSP: 
 -- https://github.com/williamboman/mason.nvim/issues/1292
 -- https://shopify.github.io/ruby-lsp/editors.html#neovim
+
 require('mason-lspconfig').setup({
     ensure_installed = {
         'lua_ls', 'clangd',
@@ -246,6 +251,7 @@ require('mason-lspconfig').setup({
 })
 
 require'lspconfig'.lua_ls.setup{}
+require'lspconfig'.clangd.setup{}
 -- =============================================================================
 -- X. EXTRAS
 -- =============================================================================
