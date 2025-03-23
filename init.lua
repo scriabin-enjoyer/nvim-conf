@@ -68,7 +68,7 @@ print("Options set")
 -- =============================================================================
 
 -- Leave insert
-vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Leave Insert Mode' })
+vim.keymap.set('i', '<C-]>', '<Esc>', { desc = 'Leave Insert Mode' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode; See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -81,7 +81,6 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagn
 vim.keymap.set('n', '<leader>`', function()
         vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, { desc = 'Toggle Diagnostics' })
-
 
 -- Exit Terminal Mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
@@ -235,13 +234,11 @@ require('mason').setup({
         }
     },
 })
-
 -- LspAttach autocmd, Keymaps, diagnostics
 require('lsp')
 
 -- Generate (extended) Capabilities Object to extend client/server capabilities
 local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
-
 -- Load nvim-lspconfig default config
 local lspconfig_defaults = require('lspconfig').util.default_config
 -- Override client capabilities in nvim-lspconfig for servers it configures
@@ -250,14 +247,15 @@ lspconfig_defaults.capabilities = vim.tbl_deep_extend(
     lspconfig_defaults.capabilities,
     cmp_capabilities
 )
-
 -- Load vim.lsp client capabilities
 local vim_lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
 -- Store extended client capabilities to use for servers not configured with lspconfig
 local extended_capabilities = vim.tbl_deep_extend('force', vim_lsp_capabilities, cmp_capabilities)
-
+-- Load servers and their configs
 local servers = require('server-configs')
 local ensure_installed_servers = vim.tbl_keys(servers or {})
+
+-- Setup handler for each server ; pass the server and its config to the callback
 require('mason-lspconfig').setup({
     ensure_installed = ensure_installed_servers,
     automatic_installation = false,
@@ -273,6 +271,63 @@ require('mason-lspconfig').setup({
 -- DON"T RUSE MASON TO INSTALL RUBY_LSP: 
 -- https://github.com/williamboman/mason.nvim/issues/1292
 -- https://shopify.github.io/ruby-lsp/editors.html#neovim
+-- =============================================================================
+-- 7. CMP 
+-- =============================================================================
+
+local cmp = require 'cmp'
+cmp.setup({
+    snippet = {
+        expand = function(args)
+            vim.snippet.expand(args.body)
+        end,
+    },
+    completion = { completeopt = 'menu,menuone,noinsert' },
+    mapping = cmp.mapping.preset.insert {
+        -- Select the [n]ext item
+        ['<C-n>'] = cmp.mapping.select_next_item(),
+        -- Select the [p]revious item
+        ['<C-p>'] = cmp.mapping.select_prev_item(),
+        -- Scroll the documentation window [b]ack / [f]orward
+        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        -- Accept ([y]es) the completion.
+        ['<C-y>'] = cmp.mapping.confirm { select = true },
+    },
+    sources = {
+        {
+            name = 'lazydev',
+            -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
+            group_index = 0,
+        },
+        { name = 'nvim_lsp', },
+        { name = 'buffer'},
+        { name = 'path'},
+        { name = 'nvim_lsp_signature_help'},
+        { name = 'omni' },
+    },
+    formatting = {
+        format = function(entry, item)
+            local lspserver_name = nil
+            if entry.source.name == 'nvim_lsp' then
+                pcall(function()
+                    lspserver_name = entry.source.source.client.name
+                end)
+            else
+                lspserver_name = 'LSP'
+            end
+            local menu_icon = {
+                lazydev = 'lazy',
+                nvim_lsp = lspserver_name,
+                buffer = 'Buff',
+                path = 'Path',
+                omni = 'Omni',
+            }
+            item.menu = menu_icon[entry.source.name]
+            return item
+        end,
+    },
+})
 
 -- =============================================================================
 -- X. EXTRAS
