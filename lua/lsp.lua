@@ -1,13 +1,3 @@
--- Add more client capabilities from cmp_nvim_lsp
--- Neovim does not implement entire LSP spec in core
--- We must add on these left-out capabilities and advertise them to our servers
-local lspconfig_defaults = require('lspconfig').util.default_config
-lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-    'force',
-    lspconfig_defaults.capabilities,
-    require('cmp_nvim_lsp').default_capabilities()
-)
-
 -- Create autocommand to enable LSP features when the LspAttach event is triggered
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),

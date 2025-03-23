@@ -1,12 +1,4 @@
 return {
     clangd = {},
-    lua_ls = {
-        settings = {
-            Lua = {
-                completion = {
-                    callSnippet = 'Replace',
-                },
-            },
-        },
-    },
+    lua_ls = {},
 }

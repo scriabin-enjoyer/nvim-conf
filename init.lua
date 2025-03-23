@@ -78,6 +78,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show [D]iagnostic error messages' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '<leader>`', function()
+        vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, { desc = 'Toggle Diagnostics' })
+
 
 -- Exit Terminal Mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
@@ -232,32 +236,51 @@ require('mason').setup({
     },
 })
 
-
+-- LspAttach autocmd, Keymaps, diagnostics
 require('lsp')
-require('server-configs')
 
--- TODO:
---      - Create Server table and require('server-configs')
---      - setup mason-lspconfig
--- Ensure installed servers here. Configure server-specific settings later
+-- Generate (extended) Capabilities Object to extend client/server capabilities
+local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+-- Load nvim-lspconfig default config
+local lspconfig_defaults = require('lspconfig').util.default_config
+-- Override client capabilities in nvim-lspconfig for servers it configures
+lspconfig_defaults.capabilities = vim.tbl_deep_extend(
+    'force',
+    lspconfig_defaults.capabilities,
+    cmp_capabilities
+)
+
+-- Load vim.lsp client capabilities
+local vim_lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
+-- Store extended client capabilities to use for servers not configured with lspconfig
+local extended_capabilities = vim.tbl_deep_extend('force', vim_lsp_capabilities, cmp_capabilities)
+
+local servers = require('server-configs')
+local ensure_installed_servers = vim.tbl_keys(servers or {})
+require('mason-lspconfig').setup({
+    ensure_installed = ensure_installed_servers,
+    automatic_installation = false,
+    handlers = {
+        function(server_name)
+            local server = servers[server_name] or {}
+            server.capabilities = vim.tbl_deep_extend('force', {}, extended_capabilities, server.capabilities or {})
+            require('lspconfig')[server_name].setup(server)
+        end,
+    },
+})
+
 -- DON"T RUSE MASON TO INSTALL RUBY_LSP: 
 -- https://github.com/williamboman/mason.nvim/issues/1292
 -- https://shopify.github.io/ruby-lsp/editors.html#neovim
 
-require('mason-lspconfig').setup({
-    ensure_installed = {
-        'lua_ls', 'clangd',
-    },
-})
-
-require'lspconfig'.lua_ls.setup{}
-require'lspconfig'.clangd.setup{}
 -- =============================================================================
 -- X. EXTRAS
 -- =============================================================================
 -- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
 
 vim.cmd [[colo]]
+-- ColorSchemeRankings
 -- vscode
 -- tokyodark
 -- material_deepocean
@@ -266,8 +289,3 @@ vim.cmd [[colo]]
 -- github_dark_defualt
 -- kanagawa_wave
 -- kanagawa_dragon
-
--- for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do vim.api.nvim_set_hl(0, group, {}) end
-
----[[ Here for reference:
---]]
