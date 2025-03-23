@@ -310,9 +310,10 @@ cmp.setup({
         format = function(entry, item)
             local lspserver_name = nil
             if entry.source.name == 'nvim_lsp' then
-                pcall(function()
+                local ok, _ = pcall(function()
                     lspserver_name = entry.source.source.client.name
                 end)
+                if not ok then lspserver_name = 'LSP' end
             else
                 lspserver_name = 'LSP'
             end
@@ -321,7 +322,6 @@ cmp.setup({
                 nvim_lsp = lspserver_name,
                 buffer = 'Buff',
                 path = 'Path',
-                omni = 'Omni',
             }
             item.menu = menu_icon[entry.source.name]
             return item
