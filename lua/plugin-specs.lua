@@ -385,6 +385,7 @@ return {
     -- 7. TREESITTER
     {
         "nvim-treesitter/nvim-treesitter",
+        -- enabled = false,
         build = ":TSUpdate",
         config = function() 
             local configs = require("nvim-treesitter.configs")
@@ -408,7 +409,7 @@ return {
                 },
                 indent = {
                     enable = true,
-                    disable = {'ruby', 'vimdoc'},
+                    disable = {'ruby', 'vimdoc', 'html'},
                 },
             })
         end,

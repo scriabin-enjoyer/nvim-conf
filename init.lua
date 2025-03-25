@@ -96,7 +96,7 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- Explore Left
--- vim.keymap.set('n', '<leader>x', ':Lex 30<cr>', { desc = 'Open Left Netrw Explore' })
+vim.keymap.set('n', '<leader>x', ':Lex 30<cr>', { desc = 'Open Left Netrw Explore' })
 
 -- Resize Windows
 vim.keymap.set('n', '<C-S-Up>', ':resize -1<CR>', { desc = 'Decrease window height' })
@@ -267,7 +267,11 @@ require('mason-lspconfig').setup({
         end,
     },
 })
-
+vim.api.nvim_create_user_command(
+    'LspCapabilities',
+    'lua =vim.lsp.get_active_clients()[1].server_capabilities',
+    {}
+)
 -- DON"T RUSE MASON TO INSTALL RUBY_LSP: 
 -- https://github.com/williamboman/mason.nvim/issues/1292
 -- https://shopify.github.io/ruby-lsp/editors.html#neovim
