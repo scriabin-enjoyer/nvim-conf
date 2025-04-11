@@ -8,5 +8,6 @@ return {
             diagnostics = true,
         },
         -- on_attach = function(client, buffer) end
-    }
+    },
+    jdtls = {},
 }
