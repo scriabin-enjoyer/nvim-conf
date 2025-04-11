@@ -416,7 +416,9 @@ return {
     },
 
     -- 7. LSP & CMP
-    {'neovim/nvim-lspconfig'},
+    {
+        'neovim/nvim-lspconfig',
+    },
     {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
     {'hrsh7th/cmp-nvim-lsp'},
@@ -425,8 +427,7 @@ return {
     {'hrsh7th/cmp-nvim-lsp-signature-help'},
     {
         'hrsh7th/nvim-cmp',
-                      event = 'InsertEnter',
-
+        event = 'InsertEnter',
     },
     {
         "folke/lazydev.nvim",

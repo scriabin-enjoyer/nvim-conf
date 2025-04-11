@@ -9,5 +9,8 @@ return {
         },
         -- on_attach = function(client, buffer) end
     },
-    jdtls = {},
+    jdtls = {
+        single_file_support = true,
+
+    },
 }
