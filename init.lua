@@ -161,6 +161,7 @@ local function indent_filetypes(ft, s)
     })
 end
 
+indent_filetypes("eruby", "2")
 indent_filetypes("html", "2")
 indent_filetypes("css", "2")
 indent_filetypes("javascript", "8")
@@ -171,7 +172,8 @@ indent_filetypes("lua", "4")
 
 -- Fix HTML tag indenting; see :h html-indent
 vim.api.nvim_create_autocmd("Filetype", {
-    pattern = "html",
+    group = vim.api.nvim_create_augroup('html-indent-fix', { clear = true }),
+    pattern = { "html", "eruby" },
     callback = function()
         vim.cmd([[
                 let g:html_indent_script1 = "inc"

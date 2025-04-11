@@ -17,11 +17,11 @@ return {
     -- TokyoDark
     {
         'https://github.com/tiagovla/tokyodark.nvim',
-        priority = 999,
+        priority = 1000,
         -- lazy = true,
         config = function()
             require("tokyodark").setup({
-                transparent_background = false, -- set background to transparent
+                transparent_background = true, -- set background to transparent
                 gamma = 1.00, -- adjust the brightness of the theme
                 styles = {
                     comments = { italic = true }, -- style for comments
@@ -34,14 +34,14 @@ return {
                 custom_palette = {} or function(palette) return {} end, -- extend palette
                 terminal_colors = true, -- enable terminal colors
             })
-            -- vim.cmd [[colorscheme tokyodark]]
+            vim.cmd [[colorscheme tokyodark]]
         end,
     },
     -- vscode
     {
         "https://github.com/Mofiqul/vscode.nvim",
         priority = 1000,
-        lazy = false,
+        -- lazy = true,
         config = function()
             local opts = {
                 transparent = true,
@@ -53,7 +53,7 @@ return {
                 },
             }
             require('vscode').setup(opts)
-            vim.cmd [[colorscheme vscode]]
+            -- vim.cmd [[colorscheme vscode]]
         end,
     },
     -- Material Theme
