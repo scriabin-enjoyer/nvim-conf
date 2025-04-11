@@ -1,4 +1,9 @@
-return {
+local _handlers = {
+    ["textDocument/hover"] =  vim.lsp.with(vim.lsp.handlers.hover, {border = "rounded"}),
+    ["textDocument/signatureHelp"] =  vim.lsp.with(vim.lsp.handlers.signature_help, {border = "rounded" }),
+}
+
+local servers = {
     clangd = {},
     lua_ls = {},
     ruby_lsp = {
@@ -14,3 +19,9 @@ return {
 
     },
 }
+
+for _, config in pairs(servers) do
+    config.handlers = _handlers
+end
+
+return servers
