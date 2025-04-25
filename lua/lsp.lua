@@ -13,10 +13,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
         map('<leader>lf', 'gf', '[G]oto File Under Cursor')
         map('<leader>li', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
         map('<leader>lr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-        map('<leader>ls', '<cmd>lua vim.lsp.buf.signature_help()<cr>', 'Signature Help')
+        map('<leader>la', '<cmd>lua vim.lsp.buf.signature_help()<cr>', 'Signature Help')
         map('<leader>lh', vim.lsp.buf.hover, 'Hover Docs')
-        map('<leader>lds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-        map('<leader>lws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+        map('<leader>ls', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+        map('<leader>lS', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
         map('<leader>lR', vim.lsp.buf.rename, '[R]e[n]ame')
         map('<leader>lc', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
