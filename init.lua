@@ -173,7 +173,7 @@ indent_filetypes("lua", "4")
 -- Fix HTML tag indenting; see :h html-indent
 vim.api.nvim_create_autocmd("Filetype", {
     group = vim.api.nvim_create_augroup('html-indent-fix', { clear = true }),
-    pattern = { "html", "eruby" },
+    pattern = { "html", }, --"eruby", "*.html.erb"},
     callback = function()
         vim.cmd([[
                 let g:html_indent_script1 = "inc"
