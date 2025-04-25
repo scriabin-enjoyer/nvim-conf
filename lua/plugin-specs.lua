@@ -34,7 +34,7 @@ return {
                 custom_palette = {} or function(palette) return {} end, -- extend palette
                 terminal_colors = true, -- enable terminal colors
             })
-            vim.cmd [[colorscheme tokyodark]]
+            -- vim.cmd [[colorscheme tokyodark]]
         end,
     },
     -- vscode
@@ -53,7 +53,7 @@ return {
                 },
             }
             require('vscode').setup(opts)
-            -- vim.cmd [[colorscheme vscode]]
+            vim.cmd [[colorscheme vscode]]
         end,
     },
     -- Material Theme
@@ -73,12 +73,30 @@ return {
         'https://github.com/olimorris/onedarkpro.nvim',
         priority = 1000,
         -- lazy = true,
+        config = function()
+            local opts = {
+                options = {
+                    transparency = true,
+                }
+            }
+            require('onedarkpro').setup(opts)
+            -- vim.cmd [[colorscheme onedark_dark]]
+        end
     },
     -- Github
     {
         'https://github.com/projekt0n/github-nvim-theme',
         priority = 1000,
-        -- lazy = false,
+        config = function()
+            require('github-theme').setup({
+                options = {
+                    transparent = true
+                }
+            })
+
+            -- vim.cmd [[colorscheme github_dark_default]]
+        end,
+        lazy = false,
     },
     -- Moonfly
     {
