@@ -274,6 +274,9 @@ vim.api.nvim_create_user_command(
     'lua =vim.lsp.get_active_clients()[1].server_capabilities',
     {}
 )
+
+require('scheme_lsp')
+
 -- DON"T RUSE MASON TO INSTALL RUBY_LSP: 
 -- https://github.com/williamboman/mason.nvim/issues/1292
 -- https://shopify.github.io/ruby-lsp/editors.html#neovim

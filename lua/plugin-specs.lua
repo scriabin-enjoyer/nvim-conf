@@ -18,7 +18,7 @@ return {
     {
         'https://github.com/tiagovla/tokyodark.nvim',
         priority = 1000,
-        -- lazy = true,
+        lazy = true,
         config = function()
             require("tokyodark").setup({
                 transparent_background = true, -- set background to transparent
@@ -37,11 +37,12 @@ return {
             -- vim.cmd [[colorscheme tokyodark]]
         end,
     },
+
     -- vscode
     {
         "https://github.com/Mofiqul/vscode.nvim",
         priority = 1000,
-        -- lazy = true,
+        lazy = true,
         config = function()
             local opts = {
                 transparent = true,
@@ -53,26 +54,37 @@ return {
                 },
             }
             require('vscode').setup(opts)
-            vim.cmd [[colorscheme vscode]]
+            -- vim.cmd [[colorscheme vscode]]
         end,
     },
+
     -- Material Theme
     {
         'https://github.com/marko-cerovac/material.nvim',
         priority = 1000,
-        -- lazy = true,
+        lazy = true,
+        config = function()
+            local opts = {
+                disable = { background = true },
+                high_visibility = { darker = true },
+            }
+            require('material').setup(opts)
+            -- vim.cmd [[colorscheme material-darker]]
+        end
     },
+
     -- Kanagawa
     {
         'https://github.com/rebelot/kanagawa.nvim',
         priority = 1000,
-        -- lazy = true,
+        lazy = true,
     },
+
     -- Onedark
     {
         'https://github.com/olimorris/onedarkpro.nvim',
         priority = 1000,
-        -- lazy = true,
+        lazy = true,
         config = function()
             local opts = {
                 options = {
@@ -83,6 +95,7 @@ return {
             -- vim.cmd [[colorscheme onedark_dark]]
         end
     },
+
     -- Github
     {
         'https://github.com/projekt0n/github-nvim-theme',
@@ -96,13 +109,19 @@ return {
 
             -- vim.cmd [[colorscheme github_dark_default]]
         end,
-        lazy = false,
+        lazy = true,
     },
+
     -- Moonfly
     {
         'https://github.com/bluz71/vim-moonfly-colors',
         priority = 1000,
         -- lazy = true,
+        config = function()
+            -- don't need to require() it
+            vim.g.moonflyTransparent = true
+            vim.cmd [[colorscheme moonfly]]
+        end
     },
 
     -- 1. WHICHKEY ; see https://github.com/folke/which-key.nvim
@@ -434,9 +453,7 @@ return {
     },
 
     -- 7. LSP & CMP
-    {
-        'neovim/nvim-lspconfig',
-    },
+    {'neovim/nvim-lspconfig'},
     {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
     {'hrsh7th/cmp-nvim-lsp'},
