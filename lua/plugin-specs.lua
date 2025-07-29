@@ -18,7 +18,7 @@ return {
     {
         'https://github.com/tiagovla/tokyodark.nvim',
         priority = 1000,
-        lazy = true,
+        lazy = false,
         config = function()
             require("tokyodark").setup({
                 transparent_background = true, -- set background to transparent
@@ -42,7 +42,7 @@ return {
     {
         "https://github.com/Mofiqul/vscode.nvim",
         priority = 1000,
-        lazy = true,
+        lazy = false,
         config = function()
             local opts = {
                 transparent = true,
@@ -51,10 +51,17 @@ return {
                 terminal_colors = false,
                 color_overrides = {
                     vscBack = "#0a0a0a",
+                    -- vscGreen = "#4a5057",
+                },
+                group_overrides = {
+                    Comment = { fg = "#4a5057", bg = 'NONE', italic = true },
                 },
             }
             require('vscode').setup(opts)
-            -- vim.cmd [[colorscheme vscode]]
+            vim.cmd [[colorscheme vscode]]
+            -- set @comment hl group to grey (for tree sitter, unsure how to do
+            -- it in the opts table above
+            vim.api.nvim_set_hl(0, "@comment", { fg = "#4a5057", bg = 'NONE', italic = true })
         end,
     },
 
@@ -62,7 +69,7 @@ return {
     {
         'https://github.com/marko-cerovac/material.nvim',
         priority = 1000,
-        lazy = true,
+        lazy = false,
         config = function()
             local opts = {
                 disable = { background = true },
@@ -77,14 +84,14 @@ return {
     {
         'https://github.com/rebelot/kanagawa.nvim',
         priority = 1000,
-        lazy = true,
+        lazy = false,
     },
 
     -- Onedark
     {
         'https://github.com/olimorris/onedarkpro.nvim',
         priority = 1000,
-        lazy = true,
+        lazy = false,
         config = function()
             local opts = {
                 options = {
@@ -109,18 +116,18 @@ return {
 
             -- vim.cmd [[colorscheme github_dark_default]]
         end,
-        lazy = true,
+        lazy = false,
     },
 
     -- Moonfly
     {
         'https://github.com/bluz71/vim-moonfly-colors',
         priority = 1000,
-        -- lazy = true,
+        -- lazy = false,
         config = function()
             -- don't need to require() it
             vim.g.moonflyTransparent = true
-            vim.cmd [[colorscheme moonfly]]
+            -- vim.cmd [[colorscheme moonfly]]
         end
     },
 
