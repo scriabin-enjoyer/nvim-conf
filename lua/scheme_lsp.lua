@@ -1,21 +1,21 @@
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "scheme",
-    callback = function()
-        local client, err = vim.lsp.start_client {
-            name = "MySchemeLsp",
-            cmd = { "/home/scriabin/Repos/Personal/SimpleSchemeLsp/exe/server.sh" }
-        }
-
-        if not client then
-            vim.notify "vim.lsp.start_client returned nil for client_id"
-            print(err)
-            return
-        end
-
-        vim.lsp.set_log_level("DEBUG")
-        vim.lsp.buf_attach_client(0, client)
-    end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+--     pattern = "scheme",
+--     callback = function()
+--         local client, err = vim.lsp.start_client {
+--             name = "SimpleSchemeLsp",
+--             cmd = { "/home/scriabin/Repos/Personal/SimpleSchemeLsp/exe/server.sh" }
+--         }
+--
+--         if not client then
+--             vim.notify "vim.lsp.start_client returned nil for client_id"
+--             print(err)
+--             return
+--         end
+--
+--         vim.lsp.set_log_level("DEBUG")
+--         vim.lsp.buf_attach_client(0, client)
+--     end,
+-- })
 
 
 -- vim.api.nvim_create_autocmd('LspRequest', {
