@@ -482,6 +482,9 @@ return {
             },
         },
     },
+    {
+        "https://github.com/vim-crystal/vim-crystal",
+    },
 }
 
 -- OTHER
