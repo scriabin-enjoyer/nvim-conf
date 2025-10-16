@@ -189,6 +189,19 @@ vim.api.nvim_create_autocmd("Filetype", {
     end
 })
 
+-- Adds format on save with erb-formatter gem cli program.
+-- NOTE: must have erb-format on path
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "eruby" },
+    callback = function()
+        vim.keymap.set("n", "<leader>f", function()
+            vim.cmd("write")
+            vim.fn.system({ "erb-format", vim.fn.expand("%:p"), "--write" })
+            vim.cmd("edit")
+        end, { desc = "Format ERB file" })
+    end
+})
+
 -- =============================================================================
 -- 4. PLUGIN LIST
 -- =============================================================================
