@@ -136,6 +136,10 @@ vim.keymap.set('n', '<leader>tl', function()
     end
 end, { desc = '[T]oggle LSP Client' })
 
+-- Insert newline above and below cursor
+vim.keymap.set("n", "<leader>o", "o<Esc>k", { desc = 'Insert newline below cursor' })
+vim.keymap.set("n", "<leader>O", "O<Esc>j", { desc = 'Insert newline above cursor' })
+
 print("Keymaps Initialized")
 
 -- =============================================================================
