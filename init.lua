@@ -267,10 +267,11 @@ lspconfig_defaults.capabilities = vim.tbl_deep_extend(
     cmp_capabilities
 )
 -- Load vim.lsp client capabilities
-local vim_lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
+-- local vim_lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
 -- Store extended client capabilities to use for servers not configured with lspconfig
-local extended_capabilities = vim.tbl_deep_extend('force', vim_lsp_capabilities, cmp_capabilities)
+-- local extended_capabilities = vim.tbl_deep_extend('force', vim_lsp_capabilities, cmp_capabilities)
 -- Load servers and their configs
+
 local servers = require('server-configs')
 local ensure_installed_servers = vim.tbl_keys(servers or {})
 
@@ -281,7 +282,7 @@ require('mason-lspconfig').setup({
     handlers = {
         function(server_name)
             local server = servers[server_name] or {}
-            server.capabilities = vim.tbl_deep_extend('force', {}, extended_capabilities, server.capabilities or {})
+            -- server.capabilities = vim.tbl_deep_extend('force', {}, extended_capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
         end,
     },
