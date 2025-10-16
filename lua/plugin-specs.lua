@@ -8,6 +8,7 @@
 -- 6. TELESCOPE
 -- 7. TREESITTER
 -- 8. LSP & CMP
+-- 9. NVIM-TREE
 -- OTHER
 
 -- NOTE: Setting either 'opts' or 'config' in any spec will cause Lazy to automatically load the plugin when we call require('lazy').setup(...)
@@ -61,7 +62,10 @@ return {
             vim.cmd [[colorscheme vscode]]
             -- set @comment hl group to grey (for tree sitter, unsure how to do
             -- it in the opts table above
-            vim.api.nvim_set_hl(0, "@comment", { fg = "#4a5057", bg = 'NONE', italic = true })
+            -- Dark grey1: #4a5057
+            -- lighter grey1: #5f6163
+            -- lightest grey1: #939699
+            vim.api.nvim_set_hl(0, "@comment", { fg = "#939699", bg = 'NONE', italic = true })
         end,
     },
 
@@ -459,7 +463,7 @@ return {
         end,
     },
 
-    -- 7. LSP & CMP
+    -- 8. LSP & CMP
     {'neovim/nvim-lspconfig'},
     {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
@@ -485,6 +489,15 @@ return {
     {
         "https://github.com/vim-crystal/vim-crystal",
     },
+
+    -- 9. NVIM-TREE
+    -- {
+    --     'https://github.com/nvim-tree/nvim-tree.lua',
+    --     lazy = false,
+    --     opts = {
+    --
+    --     },
+    -- }
 }
 
 -- OTHER
