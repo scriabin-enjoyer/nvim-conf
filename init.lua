@@ -260,7 +260,8 @@ require('lsp')
 local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- Load nvim-lspconfig default config
 local lspconfig_defaults = require('lspconfig').util.default_config
--- Override client capabilities in nvim-lspconfig for servers it configures
+-- Override and extend default lsp-client capabilities with the capabilities
+-- provided by cmp above
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
     'force',
     lspconfig_defaults.capabilities,
@@ -292,6 +293,9 @@ vim.api.nvim_create_user_command(
     'lua =vim.lsp.get_active_clients()[1].server_capabilities',
     {}
 )
+
+-- LSP DEBUG FLAG
+-- vim.lsp.log.set_level("debug")
 
 require('scheme_lsp')
 
@@ -366,6 +370,7 @@ cmp.setup({
 -- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
 
 vim.cmd [[colo]]
+vim.cmd [[:highlight colorcolumn guibg=#496157]]
 -- ColorSchemeRankings
 -- vscode
 -- tokyodark

@@ -6,11 +6,18 @@ local _handlers = {
 local servers = {
     clangd = {},
     lua_ls = {},
+    rubocop = {
+        flags = {
+            allow_incremental_sync = false,
+        },
+        -- autostart = false,
+    },
     ruby_lsp = {
+        -- autostart = false,
         mason = false,
         cmd = { vim.fn.expand("~/.rbenv/shims/ruby-lsp") },
         init_options = {
-            diagnostics = true,
+            -- diagnostics = true,
         },
         -- on_attach = function(client, buffer) end
     },
