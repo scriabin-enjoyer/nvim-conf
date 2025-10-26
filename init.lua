@@ -70,6 +70,20 @@ print("Options set")
 -- Leave insert
 vim.keymap.set('i', '<C-]>', '<Esc>', { desc = 'Leave Insert Mode' })
 
+-- Better navigation inside Insert Mode
+vim.keymap.set('i', '<C-h>', '<Left>',  { desc = 'Move left' })
+vim.keymap.set('i', '<C-j>', '<Down>',  { desc = 'Move down' })
+vim.keymap.set('i', '<C-k>', '<Up>',    { desc = 'Move up' })
+vim.keymap.set('i', '<C-l>', '<Right>', { desc = 'Move right' })
+
+-- Insert Mode Word motions
+vim.keymap.set('i', '<C-b>', '<C-o>b', { desc = 'Jump back one word' })
+vim.keymap.set('i', '<C-w>', '<C-o>w', { desc = 'Jump forward to next word start' })
+
+-- Insert Mode Line Motions
+vim.keymap.set('i', '<C-e>', '<C-o>$', { desc = 'Jump to line end' })
+vim.keymap.set('i', '<C-a>', '<C-o>_', { desc = 'Jump to line start' })
+
 -- Clear highlights on search when pressing <Esc> in normal mode; See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
