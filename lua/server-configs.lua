@@ -7,6 +7,9 @@ local servers = {
     clangd = {},
     lua_ls = {},
     rubocop = {
+        single_file_support = true,
+        filetypes = { 'ruby' },
+        root_markers = { 'Gemfile', '.git' },
         flags = {
             allow_incremental_sync = false,
         },
