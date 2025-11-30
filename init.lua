@@ -11,12 +11,11 @@
 -- X. EXTRAS
 -- =============================================================================
 
-print("Initializing Config")
+print("INITIALIZING CONFIG")
 
 -- =============================================================================
 -- 1. OPTIONS & GLOBALS
 -- =============================================================================
-
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = false
@@ -54,14 +53,14 @@ vim.opt.wrap = true
 vim.schedule(function()
     vim.opt.clipboard = 'unnamedplus'
 end)
-
+-- DISABLED:
 -- vim.opt.undofile = true
 -- vim.opt.swapfile = false
 -- vim.opt.showtabline = 2
 -- vim.opt.backup = false
 -- vim.opt.writebackup = false
 
-print("Options set")
+print("Initialized: Options")
 
 -- =============================================================================
 -- 2. BASIC KEYMAPS
@@ -104,10 +103,10 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Recenter cursor after page up'
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Recenter cursor after page down' })
 
 -- Better Window Navigation
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+-- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- Explore Left
 vim.keymap.set('n', '<leader>x', ':Lex 30<cr>', { desc = 'Open Left Netrw Explore' })
@@ -139,11 +138,13 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
 vim.keymap.set('n', '<leader>tl', function()
     local buf = vim.api.nvim_get_current_buf()
     local clients = vim.lsp.get_clients({ bufnr = buf })
-    if not buf then
+    if buf then
         if not vim.tbl_isempty(clients) then
             vim.cmd("LspStop")
+            print("Lsp Stopped")
         else
             vim.cmd("LspStart")
+            print("Lsp Started")
         end
     else
         vim.print('No Lsp clients attached!')
@@ -154,10 +155,10 @@ end, { desc = '[T]oggle LSP Client' })
 vim.keymap.set("n", "<leader>o", "o<Esc>k", { desc = 'Insert newline below cursor' })
 vim.keymap.set("n", "<leader>O", "O<Esc>j", { desc = 'Insert newline above cursor' })
 
-print("Keymaps Initialized")
+print("Initialized: Basic Keymaps")
 
 -- =============================================================================
--- 3. BASIC AUTOCOMMANDS
+-- 3. BASIC AUTOCOMMANDS & USERCOMMANDS
 -- =============================================================================
 
 -- Highlist when yanking
@@ -169,7 +170,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     end,
 })
 
--- Filetype Indents; locally scoped to block
+-- Filetype Indents
 -- TODO: move to after/ or ftplugin
 local function indent_filetypes(ft, s)
     vim.api.nvim_create_autocmd("Filetype", {
@@ -188,6 +189,37 @@ indent_filetypes("c", "8")
 indent_filetypes("ruby", "2")
 indent_filetypes("lua", "4")
 
+-- Adds format on save with erb-formatter gem cli program.
+-- NOTE: must have erb-format on path
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "eruby" },
+    callback = function()
+        vim.keymap.set("n", "<leader>f", function()
+            vim.cmd("write")
+            vim.fn.system({ "erb-format", vim.fn.expand("%:p"), "--write" })
+            vim.cmd("edit")
+        end, { desc = "Format ERB file" })
+    end
+})
+
+-- Switch all ERB open tags to comments (TODO: move to ftplugin)
+vim.api.nvim_create_autocmd("Filetype", {
+    group = vim.api.nvim_create_augroup('erb-comment-insert', { clear = true }),
+    pattern = { "eruby" },
+    callback = function()
+        vim.keymap.set('v', '<leader>gci', ":s/<%/<%#/g<CR>", { desc = "Insert ERB comments" })
+    end
+})
+
+-- Switch all ERB comments to regular tags (TODO: move to ftplugin)
+vim.api.nvim_create_autocmd("Filetype", {
+    group = vim.api.nvim_create_augroup('erb-comment-remover', { clear = true }),
+    pattern = { "eruby" },
+    callback = function()
+        vim.keymap.set('v', '<leader>gcr', ":s/<%#/<%/g<CR>", { desc = "Remove ERB comments" })
+    end
+})
+
 -- Fix HTML tag indenting; see :h html-indent
 vim.api.nvim_create_autocmd("Filetype", {
     group = vim.api.nvim_create_augroup('html-indent-fix', { clear = true }),
@@ -203,18 +235,14 @@ vim.api.nvim_create_autocmd("Filetype", {
     end
 })
 
--- Adds format on save with erb-formatter gem cli program.
--- NOTE: must have erb-format on path
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "eruby" },
-    callback = function()
-        vim.keymap.set("n", "<leader>f", function()
-            vim.cmd("write")
-            vim.fn.system({ "erb-format", vim.fn.expand("%:p"), "--write" })
-            vim.cmd("edit")
-        end, { desc = "Format ERB file" })
-    end
-})
+-- Print Server Capabilities of first attached Landguage Server
+vim.api.nvim_create_user_command(
+    'LspCapabilities',
+    'lua =vim.lsp.get_active_clients()[1].server_capabilities',
+    {}
+)
+
+print("Initialized: Auto and User Commands")
 
 -- =============================================================================
 -- 4. PLUGIN LIST
@@ -251,13 +279,17 @@ require('lazy').setup({
     }
 })
 
-print("Plugins Initialized")
+print("Initialized: Plugins")
 
 -- =============================================================================
 -- 6. LSP
 -- =============================================================================
 
--- Setup Mason before everything else so we have servers to work with
+-- Load LspAttach Autocommand
+require('lsp')
+print("Initialized: LspAttach Callback")
+
+-- Setup Mason before everything else
 require('mason').setup({
     ui = {
         icons = {
@@ -267,55 +299,47 @@ require('mason').setup({
         }
     },
 })
--- LspAttach autocmd, Keymaps, diagnostics
-require('lsp')
 
--- Generate (extended) Capabilities Object to extend client/server capabilities
-local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- Load nvim-lspconfig helper module
+local nvim_lspconfig = require('lspconfig')
+
+-- EXTEND NEOVIM'S CLIENT CAPABILITIES:
 -- Load nvim-lspconfig default config
-local lspconfig_defaults = require('lspconfig').util.default_config
--- Override and extend default lsp-client capabilities with the capabilities
--- provided by cmp above
+local lspconfig_defaults = nvim_lspconfig.util.default_config
+-- Generate (extended) Capabilities Object to extend neovim's client capabilities
+local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- Override and extend default lsp clientCapabilities with the capabilities provided by cmp
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
     'force',
     lspconfig_defaults.capabilities,
     cmp_capabilities
 )
--- Load vim.lsp client capabilities
--- local vim_lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
--- Store extended client capabilities to use for servers not configured with lspconfig
--- local extended_capabilities = vim.tbl_deep_extend('force', vim_lsp_capabilities, cmp_capabilities)
--- Load servers and their configs
 
-local servers = require('server-configs')
-local ensure_installed_servers = vim.tbl_keys(servers or {})
-
--- Setup handler for each server ; pass the server and its config to the callback
+-- Load and Setup Mason Servers
+local mason_servers = require('mason-server-configs')
 require('mason-lspconfig').setup({
-    ensure_installed = ensure_installed_servers,
+    ensure_installed = vim.tbl_keys(mason_servers or {}),
     automatic_installation = false,
     handlers = {
         function(server_name)
-            local server = servers[server_name] or {}
-            -- server.capabilities = vim.tbl_deep_extend('force', {}, extended_capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            local server_config = mason_servers[server_name] or {}
+            nvim_lspconfig[server_name].setup(server_config)
         end,
     },
 })
-vim.api.nvim_create_user_command(
-    'LspCapabilities',
-    'lua =vim.lsp.get_active_clients()[1].server_capabilities',
-    {}
-)
 
--- LSP DEBUG FLAG
+-- Load and Setup Custom Servers
+local custom_servers = require('custom-server-configs')
+for server_name, server_config in pairs(custom_servers) do
+    nvim_lspconfig[server_name].setup(server_config)
+end
+
+-- This is for a custom project
 -- vim.lsp.log.set_level("debug")
+-- require('scheme_lsp')
 
-require('scheme_lsp')
+print("Initialized: Mason and Language Servers")
 
--- DON"T RUSE MASON TO INSTALL RUBY_LSP: 
--- https://github.com/williamboman/mason.nvim/issues/1292
--- https://shopify.github.io/ruby-lsp/editors.html#neovim
 -- =============================================================================
 -- 7. CMP 
 -- =============================================================================
@@ -330,14 +354,14 @@ cmp.setup({
     completion = { completeopt = 'menu,menuone,noinsert' },
     mapping = cmp.mapping.preset.insert {
         -- Select the [n]ext item
-        ['<C-n>'] = cmp.mapping.select_next_item(),
+        ['<Tab>'] = cmp.mapping.select_next_item(),
         -- Select the [p]revious item
-        ['<C-p>'] = cmp.mapping.select_prev_item(),
+        ['<S-Tab>'] = cmp.mapping.select_prev_item(),
         -- Scroll the documentation window [b]ack / [f]orward
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         -- Accept ([y]es) the completion.
-        ['<C-y>'] = cmp.mapping.confirm { select = true },
+        ['<CR>'] = cmp.mapping.confirm { select = true },
     },
     sources = {
         {
@@ -378,19 +402,25 @@ cmp.setup({
     },
 })
 
+print("Initialized: CMP")
+
 -- =============================================================================
 -- X. EXTRAS
 -- =============================================================================
--- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
 
-vim.cmd [[colo]]
+print("CONFIG INITIALIZED")
+
+print("Current Loaded Coloscheme: " .. vim.g.colors_name)
 vim.cmd [[:highlight colorcolumn guibg=#496157]]
--- ColorSchemeRankings
--- vscode
--- tokyodark
--- material_deepocean
--- moonfly
--- onedark_dark
--- github_dark_defualt
--- kanagawa_wave
--- kanagawa_dragon
+-- 1. vscode
+-- 2. tokyodark
+-- 3. material_deepocean
+-- 4. moonfly
+-- 5. onedark_dark
+-- 6. github_dark_defualt
+-- 7. kanagawa_wave
+-- 8. kanagawa_dragon
+
+-- RESOURCES/REFERENCES/LINKS
+-- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
+--

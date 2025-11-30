@@ -7,6 +7,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
+
         map('<leader>ld', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
         map('<leader>lD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
         map('<leader>lt', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
@@ -88,4 +89,3 @@ vim.diagnostic.config {
         end,
     },
 }
-vim.print("LSP Config Initialized")
