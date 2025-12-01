@@ -311,9 +311,9 @@ local nvim_lspconfig = require('lspconfig')
 -- EXTEND NEOVIM'S CLIENT CAPABILITIES:
 -- Load nvim-lspconfig default config
 local lspconfig_defaults = nvim_lspconfig.util.default_config
--- Generate (extended) Capabilities Object to extend neovim's client capabilities
+-- Generate (extended) clientCapabilities table from cmp
 local cmp_capabilities = require('cmp_nvim_lsp').default_capabilities()
--- Override and extend default lsp clientCapabilities with the capabilities provided by cmp
+-- Override and extend default neovim clientCapabilities with the cmp one
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
     'force',
     lspconfig_defaults.capabilities,
@@ -415,8 +415,16 @@ print("Initialized: CMP")
 -- =============================================================================
 
 vim.cmd [[ colo vscode ]]
+
+-- set @comment hl group to grey (tree sitter)
+-- Dark grey1: #4a5057
+-- lighter grey1: #5f6163
+-- lightest grey1: #939699
+-- vim.api.nvim_set_hl(0, "@comment", { fg = "#939699", bg = 'NONE', italic = true })
+
 -- Custom color for the color column
 -- vim.cmd [[:highlight colorcolumn guibg=#496157]]
+
 -- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
 
 print("CONFIG INITIALIZED")

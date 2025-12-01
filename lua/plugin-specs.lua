@@ -8,7 +8,6 @@
 -- 6. TELESCOPE
 -- 7. TREESITTER
 -- 8. LSP & CMP
--- 9. NVIM-TREE
 -- OTHER
 
 -- NOTE: Setting either 'opts' or 'config' in any spec will cause Lazy to
@@ -38,12 +37,6 @@ return {
             }
             require('vscode').setup(opts)
             -- vim.cmd [[colorscheme vscode]]
-            -- set @comment hl group to grey (for tree sitter, unsure how to do
-            -- it in the opts table above
-            -- Dark grey1: #4a5057
-            -- lighter grey1: #5f6163
-            -- lightest grey1: #939699
-            vim.api.nvim_set_hl(0, "@comment", { fg = "#939699", bg = 'NONE', italic = true })
         end,
     },
 
