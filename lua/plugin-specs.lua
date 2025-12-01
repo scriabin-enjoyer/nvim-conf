@@ -11,33 +11,11 @@
 -- 9. NVIM-TREE
 -- OTHER
 
--- NOTE: Setting either 'opts' or 'config' in any spec will cause Lazy to automatically load the plugin when we call require('lazy').setup(...)
+-- NOTE: Setting either 'opts' or 'config' in any spec will cause Lazy to
+-- automatically load the plugin when we call require('lazy').setup(...)
 -- Otherwise, the plugin is loaded only when we explicitly require() it.
 return {
     -- 0. COLORSCHEMES 
-    -- TokyoDark
-    {
-        'https://github.com/tiagovla/tokyodark.nvim',
-        priority = 1000,
-        lazy = false,
-        config = function()
-            require("tokyodark").setup({
-                transparent_background = true, -- set background to transparent
-                gamma = 1.00, -- adjust the brightness of the theme
-                styles = {
-                    comments = { italic = true }, -- style for comments
-                    keywords = { italic = false }, -- style for keywords
-                    identifiers = { italic = false }, -- style for identifiers
-                    functions = { italic = false }, -- style for functions
-                    variables = { italic = false }, -- style for variables
-                },
-                custom_highlights = {} or function(highlights, palette) return {} end, -- extend highlights
-                custom_palette = {} or function(palette) return {} end, -- extend palette
-                terminal_colors = true, -- enable terminal colors
-            })
-            -- vim.cmd [[colorscheme tokyodark]]
-        end,
-    },
 
     -- vscode
     {
@@ -59,7 +37,7 @@ return {
                 },
             }
             require('vscode').setup(opts)
-            vim.cmd [[colorscheme vscode]]
+            -- vim.cmd [[colorscheme vscode]]
             -- set @comment hl group to grey (for tree sitter, unsure how to do
             -- it in the opts table above
             -- Dark grey1: #4a5057
@@ -67,44 +45,6 @@ return {
             -- lightest grey1: #939699
             vim.api.nvim_set_hl(0, "@comment", { fg = "#939699", bg = 'NONE', italic = true })
         end,
-    },
-
-    -- Material Theme
-    {
-        'https://github.com/marko-cerovac/material.nvim',
-        priority = 1000,
-        lazy = false,
-        config = function()
-            local opts = {
-                disable = { background = true },
-                high_visibility = { darker = true },
-            }
-            require('material').setup(opts)
-            -- vim.cmd [[colorscheme material-darker]]
-        end
-    },
-
-    -- Kanagawa
-    {
-        'https://github.com/rebelot/kanagawa.nvim',
-        priority = 1000,
-        lazy = false,
-    },
-
-    -- Onedark
-    {
-        'https://github.com/olimorris/onedarkpro.nvim',
-        priority = 1000,
-        lazy = false,
-        config = function()
-            local opts = {
-                options = {
-                    transparency = true,
-                }
-            }
-            require('onedarkpro').setup(opts)
-            -- vim.cmd [[colorscheme onedark_dark]]
-        end
     },
 
     -- Github
@@ -117,25 +57,12 @@ return {
                     transparent = true
                 }
             })
-
             -- vim.cmd [[colorscheme github_dark_default]]
         end,
         lazy = false,
     },
 
-    -- Moonfly
-    {
-        'https://github.com/bluz71/vim-moonfly-colors',
-        priority = 1000,
-        -- lazy = false,
-        config = function()
-            -- don't need to require() it
-            vim.g.moonflyTransparent = true
-            -- vim.cmd [[colorscheme moonfly]]
-        end
-    },
-
-    -- 1. WHICHKEY ; see https://github.com/folke/which-key.nvim
+    -- 1. WHICHKEY
     {
         "folke/which-key.nvim",
         enabled = true,
@@ -203,7 +130,7 @@ return {
         'HiPhish/rainbow-delimiters.nvim',
     },
 
-    -- 3. GITSIGNS ; see https://github.com/lewis6991/gitsigns.nvim
+    -- 3. GITSIGNS
     {
         'lewis6991/gitsigns.nvim',
         opts = {
@@ -289,7 +216,7 @@ return {
         },
     },
 
-    -- 4. INDENTBLANKLINES IBL ; see https://github.com/lukas-reineke/indent-blankline.nvim
+    -- 4. INDENTBLANKLINES IBL
     {
         "lukas-reineke/indent-blankline.nvim",
         main = "ibl",
@@ -435,7 +362,7 @@ return {
         "nvim-treesitter/nvim-treesitter",
         -- enabled = false,
         build = ":TSUpdate",
-        config = function() 
+        config = function()
             local configs = require("nvim-treesitter.configs")
             configs.setup({
                 ensure_installed = {
@@ -486,19 +413,11 @@ return {
             },
         },
     },
+
+    -- OTHER
+    -- https://github.com/stevearc/oil.nvim
     {
         "https://github.com/vim-crystal/vim-crystal",
     },
-
-    -- 9. NVIM-TREE
-    -- {
-    --     'https://github.com/nvim-tree/nvim-tree.lua',
-    --     lazy = false,
-    --     opts = {
-    --
-    --     },
-    -- }
 }
 
--- OTHER
--- https://github.com/stevearc/oil.nvim

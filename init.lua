@@ -1,13 +1,11 @@
 -- =============================================================================
--- GREP
+-- CONTENTS
 -- 1. OPTIONS & GLOBALS
 -- 2. BASIC KEYMAPS
--- 3. BASIC AUTOCOMMANDS
---      - filetype indents
--- 4. PLUGIN LIST
--- 5. LAZY (plugin installation)
--- 6. LSP
--- 7. AUTOCOMPLETE
+-- 3. BASIC AUTOCOMMANDS & USERCOMMANDS
+-- 4. LAZY
+-- 5. LSP
+-- 6. AUTOCOMPLETE
 -- X. EXTRAS
 -- =============================================================================
 
@@ -16,6 +14,7 @@ print("INITIALIZING CONFIG")
 -- =============================================================================
 -- 1. OPTIONS & GLOBALS
 -- =============================================================================
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = false
@@ -48,11 +47,12 @@ vim.opt.tabstop = 8
 vim.opt.completeopt = { "menuone", "noselect" }
 vim.opt.smartcase = true
 vim.opt.ignorecase = true
-vim.opt.termguicolors = true
+vim.opt.termguicolors = false
 vim.opt.wrap = true
 vim.schedule(function()
     vim.opt.clipboard = 'unnamedplus'
 end)
+
 -- DISABLED:
 -- vim.opt.undofile = true
 -- vim.opt.swapfile = false
@@ -83,7 +83,7 @@ vim.keymap.set('i', '<C-w>', '<C-o>w', { desc = 'Jump forward to next word start
 vim.keymap.set('i', '<C-e>', '<C-o>$', { desc = 'Jump to line end' })
 vim.keymap.set('i', '<C-a>', '<C-o>_', { desc = 'Jump to line start' })
 
--- Clear highlights on search when pressing <Esc> in normal mode; See `:help hlsearch`
+-- Clear highlights on search when pressing <Esc> in normal mode; See `:h hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic Keymaps
@@ -102,7 +102,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Recenter cursor after page up' })
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Recenter cursor after page down' })
 
--- Better Window Navigation
+-- Better Window Navigation (I never use windows so may just get rid of these)
 -- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 -- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 -- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
@@ -171,7 +171,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Filetype Indents
--- TODO: move to after/ or ftplugin
 local function indent_filetypes(ft, s)
     vim.api.nvim_create_autocmd("Filetype", {
         group = vim.api.nvim_create_augroup('set-ft-indent-opts', { clear = true }),
@@ -202,7 +201,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end
 })
 
--- Switch all ERB open tags to comments (TODO: move to ftplugin)
+-- Switch all ERB open tags to comments
 vim.api.nvim_create_autocmd("Filetype", {
     group = vim.api.nvim_create_augroup('erb-comment-insert', { clear = true }),
     pattern = { "eruby" },
@@ -211,7 +210,7 @@ vim.api.nvim_create_autocmd("Filetype", {
     end
 })
 
--- Switch all ERB comments to regular tags (TODO: move to ftplugin)
+-- Switch all ERB comments to regular tags
 vim.api.nvim_create_autocmd("Filetype", {
     group = vim.api.nvim_create_augroup('erb-comment-remover', { clear = true }),
     pattern = { "eruby" },
@@ -235,24 +234,30 @@ vim.api.nvim_create_autocmd("Filetype", {
     end
 })
 
--- Print Server Capabilities of first attached Landguage Server
+-- Print Server Capabilities of first attached Language Server
 vim.api.nvim_create_user_command(
     'LspCapabilities',
     'lua =vim.lsp.get_active_clients()[1].server_capabilities',
     {}
 )
 
+-- Hot Reload Nvim Conf
+-- NOTE: Can't resource lazy-related features (plugin configs, etc.). It will
+-- say not supported, but fails gracefully 
+vim.api.nvim_create_user_command(
+    'Soconf',
+    'source ~/.config/nvim/init.lua',
+    {}
+)
+
 print("Initialized: Auto and User Commands")
 
 -- =============================================================================
--- 4. PLUGIN LIST
+-- 4. LAZY
 -- =============================================================================
 
+-- Load plugins table
 local plugins = require('plugin-specs')
-
--- =============================================================================
--- 5. LAZY
--- =============================================================================
 
 -- Bootstrap lazy.nvim; see https://lazy.folke.io/installation
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -271,7 +276,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Plugin Installations ; see https://lazy.folke.io/configuration for options
+-- Plugin Installations; see https://lazy.folke.io/configuration for options
 require('lazy').setup({
     spec = plugins,
     rocks = {
@@ -282,7 +287,7 @@ require('lazy').setup({
 print("Initialized: Plugins")
 
 -- =============================================================================
--- 6. LSP
+-- 5. LSP
 -- =============================================================================
 
 -- Load LspAttach Autocommand
@@ -335,13 +340,12 @@ for server_name, server_config in pairs(custom_servers) do
 end
 
 -- This is for a custom project
--- vim.lsp.log.set_level("debug")
 -- require('scheme_lsp')
 
 print("Initialized: Mason and Language Servers")
 
 -- =============================================================================
--- 7. CMP 
+-- 6. CMP 
 -- =============================================================================
 
 local cmp = require 'cmp'
@@ -360,8 +364,10 @@ cmp.setup({
         -- Scroll the documentation window [b]ack / [f]orward
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        -- Abort selection, close completion menu, stays in insert
+        ['<C-e>'] = cmp.mapping.abort(),
         -- Accept ([y]es) the completion.
-        ['<CR>'] = cmp.mapping.confirm { select = true },
+        ['<C-y>'] = cmp.mapping.confirm { select = true },
     },
     sources = {
         {
@@ -408,19 +414,9 @@ print("Initialized: CMP")
 -- X. EXTRAS
 -- =============================================================================
 
-print("CONFIG INITIALIZED")
-
-print("Current Loaded Coloscheme: " .. vim.g.colors_name)
-vim.cmd [[:highlight colorcolumn guibg=#496157]]
--- 1. vscode
--- 2. tokyodark
--- 3. material_deepocean
--- 4. moonfly
--- 5. onedark_dark
--- 6. github_dark_defualt
--- 7. kanagawa_wave
--- 8. kanagawa_dragon
-
--- RESOURCES/REFERENCES/LINKS
+vim.cmd [[ colo vscode ]]
+-- Custom color for the color column
+-- vim.cmd [[:highlight colorcolumn guibg=#496157]]
 -- root directory query: https://github.com/neovim/nvim-lspconfig/issues/320
---
+
+print("CONFIG INITIALIZED")
