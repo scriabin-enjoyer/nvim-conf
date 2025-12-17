@@ -24,8 +24,10 @@ vim.opt.mouse = 'a'
 vim.opt.breakindent = true
 vim.opt.numberwidth = 4
 vim.opt.signcolumn = "yes"
-vim.opt.updatetime = 250
-vim.opt.timeoutlen = 500
+vim.opt.updatetime = 200
+vim.opt.timeoutlen = 400
+vim.opt.ttimeout = true
+vim.opt.ttimeoutlen = 50
 vim.opt.inccommand = 'split'
 vim.opt.scrolloff = 10
 vim.opt.sidescrolloff = 10
@@ -66,8 +68,9 @@ print("Initialized: Options")
 -- 2. BASIC KEYMAPS
 -- =============================================================================
 
--- Leave insert
+-- Leave insert; Have multiple in case one doesn't work on some other platform
 vim.keymap.set('i', '<C-]>', '<Esc>', { desc = 'Leave Insert Mode' })
+vim.keymap.set({'i', 'v'}, '<M-j>', '<Esc>:w<CR>', { desc = 'Leave Insert Mode' })
 
 -- Better navigation inside Insert Mode
 vim.keymap.set('i', '<C-h>', '<Left>',  { desc = 'Move left' })
@@ -118,8 +121,8 @@ vim.keymap.set('n', '<C-S-Left>', ':vertical resize +1<CR>', { desc = 'Shift win
 vim.keymap.set('n', '<C-S-Right>', ':vertical resize +1<CR>', { desc = 'Shift window right' })
 
 -- Buffers
-vim.keymap.set('n', '<S-h>', ':bprevious<CR>', { desc = 'Switch to previous buffer' })
-vim.keymap.set('n', '<S-l>', ':bnext<CR>', { desc = 'Switch to previous buffer' })
+vim.keymap.set('n', '[b', ':bprevious<CR>', { desc = 'Switch to previous buffer' })
+vim.keymap.set('n', ']b', ':bnext<CR>', { desc = 'Switch to previous buffer' })
 vim.keymap.set('n', '<leader>bd', ':bd<CR>', { desc = 'Delete current buffer' })
 
 -- Stay in Visual Mode After Indent
@@ -127,12 +130,12 @@ vim.keymap.set('v', '<', '<gv', { desc = 'Retain visual mode after left indent' 
 vim.keymap.set('v', '>', '>gv', { desc = 'Retain visual mode after right indent' })
 
 -- Move Single Line Up and Down
-vim.keymap.set("n", "<A-j>", ":m .+1<CR>==")
-vim.keymap.set("n", "<A-k>", ":m .-2<CR>==")
+-- vim.keymap.set("n", "<A-j>", ":m .+1<CR>==")
+-- vim.keymap.set("n", "<A-k>", ":m .-2<CR>==")
 
 -- Move Visual Selection Up and Down
-vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
-vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
+-- vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
+-- vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
 
 -- Toggle LSP
 vim.keymap.set('n', '<leader>tl', function()
