@@ -70,7 +70,10 @@ print("Initialized: Options")
 
 -- Leave insert; Have multiple in case one doesn't work on some other platform
 vim.keymap.set('i', '<C-]>', '<Esc>', { desc = 'Leave Insert Mode' })
+vim.keymap.set({'i', 'v'}, '<M-h>', '<Esc>:w<CR>', { desc = 'Leave Insert Mode' })
 vim.keymap.set({'i', 'v'}, '<M-j>', '<Esc>:w<CR>', { desc = 'Leave Insert Mode' })
+vim.keymap.set({'i', 'v'}, '<M-k>', '<Esc>:w<CR>', { desc = 'Leave Insert Mode' })
+vim.keymap.set({'i', 'v'}, '<M-l>', '<Esc>:w<CR>', { desc = 'Leave Insert Mode' })
 
 -- Better navigation inside Insert Mode
 vim.keymap.set('i', '<C-h>', '<Left>',  { desc = 'Move left' })

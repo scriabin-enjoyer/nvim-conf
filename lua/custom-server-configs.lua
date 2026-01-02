@@ -9,7 +9,8 @@ local custom_servers = {
         -- see # https://github.com/rubocop/rubocop/issues/14681
         -- rubocop >= 1.81.0 introduced some yucky performance issues with their language server
         -- so use 1.80.2 until they fix this shit AIYAA
-        cmd = { vim.fn.expand("~/.rbenv/shims/rubocop"), "_1.80.2_", "--lsp" },
+        -- cmd = { vim.fn.expand("~/.rbenv/shims/rubocop"), "_1.80.2_", "--lsp" },
+        cmd = { vim.fn.expand("~/.rbenv/shims/rubocop"), "--lsp" },
         single_file_support = true,
         filetypes = { 'ruby' },
         root_markers = { 'Gemfile', '.git' },
