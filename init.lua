@@ -46,7 +46,7 @@ vim.opt.guicursor = "a:block,i-ci-ve-r:blinkwait1-blinkon350-blinkoff350"
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 8
 vim.opt.tabstop = 8
-vim.opt.completeopt = { "menuone", "noselect" }
+vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect" }
 vim.opt.smartcase = true
 vim.opt.ignorecase = true
 vim.opt.termguicolors = false
@@ -361,19 +361,19 @@ cmp.setup({
             vim.snippet.expand(args.body)
         end,
     },
-    completion = { completeopt = 'menu,menuone,noinsert' },
+    completion = { completeopt = 'menu,menuone,noinsert,noselect' },
     mapping = cmp.mapping.preset.insert {
         -- Select the [n]ext item
-        ['<Tab>'] = cmp.mapping.select_next_item(),
+        ['<Tab>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
         -- Select the [p]revious item
-        ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+        ['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
         -- Scroll the documentation window [b]ack / [f]orward
         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         -- Abort selection, close completion menu, stays in insert
-        ['<C-e>'] = cmp.mapping.abort(),
+        ['<C-c>'] = cmp.mapping.abort(),
         -- Accept ([y]es) the completion.
-        ['<C-y>'] = cmp.mapping.confirm { select = true },
+        ['<CR>'] = cmp.mapping.confirm { select = true },
     },
     sources = {
         {
